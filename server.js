@@ -3,8 +3,8 @@ var mysql = require('mysql');
 require('dotenv').config()
 
 var app = express();
-app.listen(3000,function(){
-    console.log('Node server running @ http://localhost:3000')
+app.listen(6000,function(){
+    console.log('Node server running @ http://localhost:6000')
 });
 
 var con = mysql.createConnection({
