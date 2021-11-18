@@ -12,9 +12,42 @@ var con = mysql.createConnection({
 con.connect(function(err) {
   if (err) throw err;
   console.log("Connected!");
-  var sql = "CREATE TABLE talents (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), email VARCHAR(255), avatar_url VARCHAR(2000), manager_id VARCHAR(255))";
+
+  var sql = "CREATE TABLE managers (manager_id INT, full_name VARCHAR(255), email VARCHAR(255), password VARCHAR(500), PRIMARY KEY (manager_id))";
   con.query(sql, function (err, result) {
     if (err) throw err;
-    console.log("Table created");
+    console.log("Table managers created");
   });
+
+  var sql = "CREATE TABLE talents (talent_id INT, name VARCHAR(255), email VARCHAR(255), avatar_url VARCHAR(2000), manager_id INT, PRIMARY KEY (talent_id), FOREIGN KEY (manager_id) REFERENCES managers(manager_id))";
+  con.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log("Table talents created");
+  });
+
+  var sql = "CREATE TABLE courses (course_id INT, course_name VARCHAR(255), time datetime, creator_id INT, PRIMARY KEY (course_id), FOREIGN KEY (creator_id) REFERENCES managers(manager_id))";
+  con.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log("Table courses created");
+  });
+
+  var sql = "CREATE TABLE lessons (lesson_id INT, lesson_name VARCHAR(255), time datetime, course_id INT, PRIMARY KEY (lesson_id), FOREIGN KEY (course_id) REFERENCES courses(course_id))";
+  con.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log("Table lessons created");
+  });
+
+  var sql = "CREATE TABLE scores (score INT, talent_id INT, lesson_id INT, course_id INT, FOREIGN KEY (talent_id) REFERENCES talents(talent_id), FOREIGN KEY (lesson_id) REFERENCES lessons(lesson_id), FOREIGN KEY (course_id) REFERENCES courses(course_id))";
+  con.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log("Table scores created");
+  });
+
+  var sql = "CREATE TABLE schedules (mean_score FLOAT, talent_id INT, course_id INT, FOREIGN KEY (talent_id) REFERENCES talents(talent_id), FOREIGN KEY (course_id) REFERENCES courses(course_id))";
+  con.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log("Table schedules created");
+  });
+
+  return
 });
