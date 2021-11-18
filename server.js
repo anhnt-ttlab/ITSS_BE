@@ -14,15 +14,21 @@ var con = mysql.createConnection({
     database: process.env.DB_NAME
   });
 
-  con.connect(function(err) {
-    if (err) throw err;
-    console.log("Connected!!!")
-  });
+con.connect(function(err) {
+  if (err) throw err;
+  console.log("Connected!!!")
+});
 
-  app.get('/public/home.html', function (req, res) {
-    var sql = "SELECT * FROM talents";
-    con.query(sql, function(err, results) {
-      if (err) throw err;
-      res.send(results);
-    });
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
+app.get('/public/home.html', function (req, res) {
+  var sql = "SELECT * FROM talents";
+  con.query(sql, function(err, results) {
+    if (err) throw err;
+    res.send(results);
   });
+});
