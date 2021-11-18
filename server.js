@@ -26,7 +26,7 @@ app.use(function(req, res, next) {
 });
 
 app.get('/public/home.html', function (req, res) {
-  var sql = "SELECT * FROM temp";
+  var sql = "SELECT * FROM talents";
   con.query(sql, function(err, results) {
     if (err) throw err;
     res.send(results);
