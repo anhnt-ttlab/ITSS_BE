@@ -1,4 +1,7 @@
 var express = require('express');
+let session = require('express-session');
+let bodyParser = require('body-parser');
+let expressValidator = require('express-validator')
 var mysql = require('mysql');
 require('dotenv').config()
 
@@ -24,7 +27,16 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
+app.use(expressValidator())
+app.use(bodyParser.json());
+app.use(session({
+  key: 'session_cookie_name',
+  secret: 'session_cookie_secret',
+  resave: true,
+  saveUninitialized: false
+}));
 
+app.use("/", require("./src/managers/managerControllers"));
 app.get('/public/home.html', function (req, res) {
   var sql = "SELECT * FROM talents";
   con.query(sql, function(err, results) {

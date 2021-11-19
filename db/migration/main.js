@@ -13,25 +13,25 @@ con.connect(function(err) {
   if (err) throw err;
   console.log("Connected!");
 
-  var sql = "CREATE TABLE managers (manager_id INT, full_name VARCHAR(255), email VARCHAR(255), password VARCHAR(500), PRIMARY KEY (manager_id))";
+  var sql = "CREATE TABLE managers (manager_id INT AUTO_INCREMENT, full_name VARCHAR(255), email VARCHAR(255), password VARCHAR(500), PRIMARY KEY (manager_id))";
   con.query(sql, function (err, result) {
     if (err) throw err;
     console.log("Table managers created");
   });
 
-  var sql = "CREATE TABLE talents (talent_id INT, name VARCHAR(255), email VARCHAR(255), avatar_url VARCHAR(2000), manager_id INT, PRIMARY KEY (talent_id), FOREIGN KEY (manager_id) REFERENCES managers(manager_id))";
+  var sql = "CREATE TABLE talents (talent_id INT AUTO_INCREMENT, name VARCHAR(255), email VARCHAR(255), avatar_url VARCHAR(2000), manager_id INT, PRIMARY KEY (talent_id), FOREIGN KEY (manager_id) REFERENCES managers(manager_id))";
   con.query(sql, function (err, result) {
     if (err) throw err;
     console.log("Table talents created");
   });
 
-  var sql = "CREATE TABLE courses (course_id INT, course_name VARCHAR(255), time datetime, creator_id INT, PRIMARY KEY (course_id), FOREIGN KEY (creator_id) REFERENCES managers(manager_id))";
+  var sql = "CREATE TABLE courses (course_id INT AUTO_INCREMENT, course_name VARCHAR(255), time datetime, creator_id INT, PRIMARY KEY (course_id), FOREIGN KEY (creator_id) REFERENCES managers(manager_id))";
   con.query(sql, function (err, result) {
     if (err) throw err;
     console.log("Table courses created");
   });
 
-  var sql = "CREATE TABLE lessons (lesson_id INT, lesson_name VARCHAR(255), time datetime, course_id INT, PRIMARY KEY (lesson_id), FOREIGN KEY (course_id) REFERENCES courses(course_id))";
+  var sql = "CREATE TABLE lessons (lesson_id INT AUTO_INCREMENT, lesson_name VARCHAR(255), time datetime, course_id INT, PRIMARY KEY (lesson_id), FOREIGN KEY (course_id) REFERENCES courses(course_id))";
   con.query(sql, function (err, result) {
     if (err) throw err;
     console.log("Table lessons created");
