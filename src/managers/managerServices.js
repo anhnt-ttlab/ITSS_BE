@@ -16,8 +16,6 @@ let findManagers = async (body) => {
   var sql = "SELECT * FROM managers where email = ?";
   try {
     const rows = await query(sql, [body.email]);
-    console.log("aergaer", body.email)
-    console.log("111", rows)
     return rows
   } catch(err) {
     console.log(err)
