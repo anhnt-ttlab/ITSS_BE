@@ -22,6 +22,17 @@ let raiseErr = async (req) => {
     return await raiseErr(req);
   }
   
+  let loginValidator = async (req) => {
+    req.check('email', 'email is required.').not().isEmpty();
+    req.check('email', 'Invalid email.').isEmail();
+    req.check('password', 'password is required.').not().isEmpty();
+    req.check('password', 'Password must be more than 6 characters').isLength({min:6});
+  
+    //check for errors
+    return await raiseErr(req);
+  }
+  
   module.exports = {
     registerValidator,
+    loginValidator,
   };

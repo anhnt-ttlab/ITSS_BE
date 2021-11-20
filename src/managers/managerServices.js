@@ -16,6 +16,8 @@ let findManagers = async (body) => {
   var sql = "SELECT * FROM managers where email = ?";
   try {
     const rows = await query(sql, [body.email]);
+    console.log("aergaer", body.email)
+    console.log("111", rows)
     return rows
   } catch(err) {
     console.log(err)
@@ -25,36 +27,52 @@ let findManagers = async (body) => {
 
 async function register (body) {
   let user = await findManagers(body);
+  let hashedPassword;
   if (!user.length) {
-    bcrypt.hash(body.password, 10, async (err, hash) => {
-      if (err) {return next(err);}
-      try {
-        var sql = "INSERT INTO managers (full_name, email, password) VALUES(?,?,?)";
-        var values = [body.full_name, body.email, hash];
-        const rows = await query(sql, values);
-        return rows
-      } catch(err) {
-        console.log(err)
-        throw err
-      }
-      finally {}
-    })
+    hashedPassword = await bcrypt.hash(body.password, 10)
+    try {
+      var sql = "INSERT INTO managers (full_name, email, password) VALUES(?,?,?)";
+      var values = [body.full_name, body.email, hashedPassword];
+      await query(sql, values);
+      result = await findManagers(body)
+    } catch(error) {
+      console.log(error)
+      throw error
+    }
+    finally {}
+    return result;
+  } else {
+    return false;
+  }
+}
+
+let signIn = async (req) => {
+  let user = await findManagers(req.body);
+  if (!user.length) {
+    return false;
+  } else {
+    let comparePass = await bcrypt.compare(req.body.password, user[0].password);
+    if (comparePass === false) {
+      return false;
+    } else {
+      req.session.user = user;
+      return user;
+    }
+  };
+};
+
+let isLogging = async (req) => {
+  if (req.session && req.session.user) {
     return true;
   } else {
     return false;
   }
 }
 
-async function login (body) {
-  let user = await findManagers(body);
-  if (user.length == 1) {
-    return true;
-  } else {
-    return false;
-  }
-}
 
 module.exports = {
+  findManagers,
   register,
-  login
+  signIn,
+  isLogging
 };
