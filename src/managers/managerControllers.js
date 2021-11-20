@@ -70,5 +70,25 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
+router.get("/logout", async (req, res, next) => {
+  try {
+    let isLogged = await isLogging(req);
+    if (isLogged === false) {
+      return res.send({
+        message: "You are not logged in.",
+        success: false,
+        status: 401
+      });
+    }
+    req.session.user = null;
+    return res.send({
+      message: "Sign Out successfully.",
+      success: true,
+      status: 200
+    });
+  } catch (error) {
+    return res.status(500).send({error: "Server Error"});
+  }
+});
 
 module.exports = router;
