@@ -45,6 +45,16 @@ async function register (body) {
   }
 }
 
+async function login (body) {
+  let user = await findManagers(body);
+  if (user.length == 1) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 module.exports = {
   register,
+  login
 };
