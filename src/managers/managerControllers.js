@@ -28,6 +28,23 @@ router.post("/register", async (req, res, next) => {
   }
 });
 
+router.get("/profile", async (req, res, next) => {
+  try {
+    let isLogged = await isLogging(req);
+    if (isLogged === false) {
+      return res.send({message: "You haven't logged in."});
+    } else {
+      return res.send({
+        message: "Get profile successfully.",
+        profile: req.session.user  
+      });
+    }
+  } catch (error) {
+    console.log(error)
+    return res.status(500).send({error: "Server Error"});
+  }
+});
+
 router.post("/login", async (req, res, next) => {
   try {
     let isLogged = await isLogging(req);
