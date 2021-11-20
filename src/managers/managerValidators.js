@@ -15,8 +15,8 @@ let raiseErr = async (req) => {
     req.check('full_name', 'full_name must be more than 2 characters').isLength({min:3});
     req.check('password', 'password is required.').not().isEmpty();
     req.check('password', 'Password must be more than 6 characters').isLength({min:6});
-    req.check('password_confirmation', 'password_confirmation is required.').not().isEmpty();
-    req.check('password_confirmation','Password mismatch').equals(req.body.password);
+    // req.check('password_confirmation', 'password_confirmation is required.').not().isEmpty();
+    // req.check('password_confirmation','Password mismatch').equals(req.body.password);
   
     //check for errors
     return await raiseErr(req);
