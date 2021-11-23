@@ -1,12 +1,11 @@
 // src/users/controllers.js
 
-let express = require("express");
-let router = new express.Router();
+import express from "express"
+import {register, signIn, isLogging} from "./managerServices.js"
+import {registerValidator, loginValidator} from "./managerValidators.js"
+let managerRouter = new express.Router();
 
-let {register, signIn, isLogging} = require("./managerServices");
-let {registerValidator, loginValidator} = require("./managerValidators");
-
-router.post("/register", async (req, res, next) => {
+managerRouter.post("/register", async (req, res, next) => {
   try {
     let validator = await registerValidator(req);
     if (validator !== null) {
@@ -28,7 +27,7 @@ router.post("/register", async (req, res, next) => {
   }
 });
 
-router.get("/profile", async (req, res, next) => {
+managerRouter.get("/profile", async (req, res, next) => {
   try {
     let isLogged = await isLogging(req);
     if (isLogged === false) {
@@ -45,7 +44,7 @@ router.get("/profile", async (req, res, next) => {
   }
 });
 
-router.post("/login", async (req, res, next) => {
+managerRouter.post("/login", async (req, res, next) => {
   try {
     let isLogged = await isLogging(req);
     if (isLogged === true) {
@@ -70,7 +69,7 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
-router.get("/logout", async (req, res, next) => {
+managerRouter.get("/logout", async (req, res, next) => {
   try {
     let isLogged = await isLogging(req);
     if (isLogged === false) {
@@ -91,4 +90,6 @@ router.get("/logout", async (req, res, next) => {
   }
 });
 
-module.exports = router;
+export {
+  managerRouter
+}
