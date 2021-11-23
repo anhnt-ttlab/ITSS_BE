@@ -1,16 +1,6 @@
-let bcrypt = require('bcrypt')
-const util = require('util');
-var mysql = require('mysql');
+import bcrypt from 'bcrypt'
+import { con, query } from "../../server.js";
 
-
-
-var con = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
-  });
-const query = util.promisify(con.query).bind(con);
 
 let findManagers = async (body) => {
   var sql = "SELECT * FROM managers where email = ?";
@@ -32,7 +22,7 @@ async function register (body) {
       var sql = "INSERT INTO managers (full_name, email, password) VALUES(?,?,?)";
       var values = [body.full_name, body.email, hashedPassword];
       await query(sql, values);
-      result = await findManagers(body)
+      var result = await findManagers(body)
     } catch(error) {
       console.log(error)
       throw error
@@ -47,10 +37,12 @@ async function register (body) {
 let signIn = async (req) => {
   let user = await findManagers(req.body);
   if (!user.length) {
+    con.end()
     return false;
   } else {
     let comparePass = await bcrypt.compare(req.body.password, user[0].password);
     if (comparePass === false) {
+      con.end()
       return false;
     } else {
       req.session.user = user;
@@ -68,7 +60,7 @@ let isLogging = async (req) => {
 }
 
 
-module.exports = {
+export {
   findManagers,
   register,
   signIn,

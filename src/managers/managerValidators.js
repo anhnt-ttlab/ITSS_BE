@@ -32,7 +32,7 @@ let raiseErr = async (req) => {
     return await raiseErr(req);
   }
   
-  module.exports = {
+ export {
     registerValidator,
     loginValidator,
   };

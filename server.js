@@ -1,9 +1,12 @@
-var express = require('express');
-let session = require('express-session');
-let bodyParser = require('body-parser');
-let expressValidator = require('express-validator')
-var mysql = require('mysql');
-require('dotenv').config()
+import express from 'express'
+import session from 'express-session'
+import bodyParser from 'body-parser'
+import expressValidator from 'express-validator'
+import mysql from 'mysql'
+import util from 'util'
+import dotenv from 'dotenv'
+import { managerRouter } from "./src/managers/managerControllers.js"
+dotenv.config()
 
 var app = express();
 app.use(function(req, res, next) {
@@ -22,12 +25,7 @@ var con = mysql.createConnection({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME
   });
-
-con.connect(function(err) {
-  if (err) throw err;
-  console.log("Connected!!!")
-});
-
+const query = util.promisify(con.query).bind(con);
 app.use(expressValidator())
 app.use(bodyParser.json());
 app.use(session({
@@ -37,7 +35,7 @@ app.use(session({
   saveUninitialized: false
 }));
 
-app.use("/", require("./src/managers/managerControllers"));
+app.use("/", managerRouter);
 app.get('/public/home.html', function (req, res) {
   var sql = "SELECT * FROM talents";
   con.query(sql, function(err, results) {
@@ -45,3 +43,5 @@ app.get('/public/home.html', function (req, res) {
     res.send(results);
   });
 });
+
+export { con, query };
