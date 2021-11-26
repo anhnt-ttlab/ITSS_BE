@@ -24,7 +24,7 @@ app.use(cors({
   allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept']
 }));
 app.use(cors());
-app.listen(7000,function(){
+app.listen(process.env.PORT || 7000,function(){
     console.log('Node server running @ http://localhost:7000')
 });
 
