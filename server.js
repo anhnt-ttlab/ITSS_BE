@@ -20,11 +20,11 @@ app.listen(7000,function(){
 });
 
 var con = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
-  });
+  host: process.env.DB_HOST || "us-cdbr-east-04.cleardb.com",
+  user: process.env.DB_USERNAME || "b74937bf47e8f6",
+  password: process.env.DB_PASSWORD || "4e6fcb13",
+  database: process.env.DB_NAME || "heroku_b4a750ab3bbd554",
+});
 const query = util.promisify(con.query).bind(con);
 app.use(expressValidator())
 app.use(bodyParser.json());
