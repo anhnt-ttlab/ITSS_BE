@@ -20,7 +20,7 @@ var app = express();
 // });
 app.use(cors({
   origin: 'https://itss-fe.herokuapp.com',
-  credentials: true,
+  // credentials: true,
   allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept']
 }));
 app.use(cors());
