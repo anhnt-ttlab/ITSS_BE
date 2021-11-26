@@ -10,19 +10,20 @@ import { managerRouter } from "./src/managers/managerControllers.js"
 dotenv.config()
 
 var app = express();
-// app.use(function (req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "https://itss-fe.herokuapp.com");
-//   res.header(
-//     "Access-Control-Allow-Headers",
-//     "Origin, X-Requested-With, Content-Type, Accept"
-//   );
-//   next();
-// });
-app.use(cors({
-  origin: 'https://itss-fe.herokuapp.com',
-  credentials: true,
-  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept']
-}));
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "https://itss-fe.herokuapp.com");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  res.header("Access-Control-Allow-Credentials", "true");
+  next();
+});
+// app.use(cors({
+//   origin: 'https://itss-fe.herokuapp.com',
+//   credentials: true,
+//   allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept']
+// }));
 // app.use(cors());
 app.listen(process.env.PORT || 7000,function(){
     console.log('Node server running @ http://localhost:7000')
