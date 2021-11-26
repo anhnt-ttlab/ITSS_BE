@@ -5,7 +5,7 @@ import expressValidator from 'express-validator'
 import mysql from 'mysql'
 import util from 'util'
 import dotenv from 'dotenv'
-var cors = require("cors");
+import cors from 'cors'
 import { managerRouter } from "./src/managers/managerControllers.js"
 dotenv.config()
 
