@@ -7,11 +7,12 @@ import util from 'util'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import { managerRouter } from "./src/managers/managerControllers.js"
+import { talentRouter } from "./src/talents/talentControllers.js"
 dotenv.config()
 
 var app = express();
 app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "https://itss-fe.herokuapp.com");
+  res.header("Access-Control-Allow-Origin", process.env.FE_PORT);
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
@@ -46,6 +47,7 @@ app.use(session({
 }));
 
 app.use("/", managerRouter);
+app.use("/talent", talentRouter);
 app.get('/public/home.html', function (req, res) {
   var sql = "SELECT * FROM talents";
   con.query(sql, function(err, results) {
