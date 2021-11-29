@@ -54,7 +54,7 @@ talentRouter.patch("/", async (req, res, next) => {
           statusCode: 401
         });
       } else {
-        var currentTalent = await findTalentById(req.body.id)
+        var currentTalent = await findTalentById(req.body.talent_id)
         if (!currentTalent) {
           res.send({message: "Talent not found"})
         } else {

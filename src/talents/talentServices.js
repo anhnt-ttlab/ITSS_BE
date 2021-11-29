@@ -39,7 +39,7 @@ async function createTalent (body) {
   let talents = await findTalentsByEmail(body);
   if (!talents.length) {
     try {
-      var sql = "INSERT INTO talents (name, email, avatar_url,manager_id) VALUES(?,?,?,?)";
+      var sql = "INSERT INTO talents (name, email, avatar, manager_id) VALUES(?,?,?,?)";
       var values = [body.name, body.email, body.avatar, body.manager_id];
       await query(sql, values);
       var result = await findTalentsByEmail(body)
@@ -56,10 +56,10 @@ async function createTalent (body) {
 
 async function updateTalent (body) {
   let talents = await findTalentsByEmail(body);
-  if (!talents.length || talents[0].talent_id == body.id) {
+  if (!talents.length || talents[0].talent_id == body.talent_id) {
     try {
-      var sql = "UPDATE talents SET name = ?, email = ?, avatar_url = ? WHERE talent_id = ?;";
-      var values = [body.name, body.email, body.avatar, body.id];
+      var sql = "UPDATE talents SET name = ?, email = ?, avatar = ? WHERE talent_id = ?;";
+      var values = [body.name, body.email, body.avatar, body.talent_id];
       await query(sql, values);
       var result = await findTalentsByEmail(body)
     } catch(error) {

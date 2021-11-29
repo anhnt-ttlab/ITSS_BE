@@ -19,7 +19,7 @@ con.connect(function(err) {
     console.log("Table managers created");
   });
 
-  var sql = "CREATE TABLE talents (talent_id INT AUTO_INCREMENT, name VARCHAR(255), email VARCHAR(255), avatar_url VARCHAR(2000), manager_id INT, PRIMARY KEY (talent_id), FOREIGN KEY (manager_id) REFERENCES managers(manager_id))";
+  var sql = "CREATE TABLE talents (talent_id INT AUTO_INCREMENT, name VARCHAR(255), email VARCHAR(255), avatar VARCHAR(2000), manager_id INT, PRIMARY KEY (talent_id), FOREIGN KEY (manager_id) REFERENCES managers(manager_id))";
   con.query(sql, function (err, result) {
     if (err) throw err;
     console.log("Table talents created");

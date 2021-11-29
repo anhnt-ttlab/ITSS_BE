@@ -16,7 +16,7 @@ let raiseErr = async (req) => {
   }
 
   let updateTalentValidator = async (req) => {
-    req.check('id', 'id is required.').not().isEmpty();
+    req.check('talent_id', 'talent id is required.').not().isEmpty();
     //check for errors
     return await raiseErr(req);
   }

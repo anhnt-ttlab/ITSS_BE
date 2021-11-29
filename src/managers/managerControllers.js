@@ -71,9 +71,7 @@ managerRouter.post("/login", async (req, res, next) => {
 
 managerRouter.get("/logout", async (req, res, next) => {
   try {
-    console.log('hello')
     let isLogged = await isLogging(req);
-    console.log(isLogged, 'log');
     if (isLogged === false) {
       return res.send({
         message: "You are not logged in.",
@@ -81,7 +79,6 @@ managerRouter.get("/logout", async (req, res, next) => {
         status: 401
       });
     }
-    console.log('sau dong 83')
     req.session.user = null;
     return res.send({
       message: "Sign Out successfully.",
