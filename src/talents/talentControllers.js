@@ -1,7 +1,7 @@
 // src/users/controllers.js
 
 import express from "express"
-import {isLogging} from "../managers/managerServices.js"
+import {findManagerById, isLogging} from "../managers/managerServices.js"
 import {createTalent, getListTalents, findTalentById, updateTalent, deleteTalentById} from "./talentServices.js"
 import {createTalentValidator, updateTalentValidator} from "./talentValidators.js"
 let talentRouter = new express.Router();
@@ -118,12 +118,23 @@ talentRouter.get("/:id", async (req, res, next) => {
             statusCode: 404
           })
         } else {
+        var managerInfo = await findManagerById(talentDetail.manager_id);
+        if (!managerInfo) {
+          res.send({
+            message: "Manager not found",
+            statusCode: 404
+          })
+        } else {
           return res.send({
             status: 200,
             message: "Get talent detail successfully.",
-            talent: talentDetail
+            talent: {
+              ...talentDetail,
+              manager_name: managerInfo.full_name
+            },
         });
         }
+      }
     }
   } catch (error) {
     console.log(error)

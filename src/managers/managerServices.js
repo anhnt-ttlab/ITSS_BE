@@ -13,6 +13,17 @@ let findManagers = async (body) => {
   } finally {}
 }
 
+let findManagerById = async (id) => {
+  var sql = "SELECT * FROM managers where manager_id = ?";
+  try {
+    const rows = await query(sql, [id]);
+    return rows[0]
+  } catch(err) {
+    console.log(err)
+    throw err
+  } finally {}
+}
+
 async function register (body) {
   let user = await findManagers(body);
   let hashedPassword;
@@ -64,5 +75,6 @@ export {
   findManagers,
   register,
   signIn,
-  isLogging
+  isLogging,
+  findManagerById
 };
