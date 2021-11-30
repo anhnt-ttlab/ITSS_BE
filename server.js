@@ -8,6 +8,7 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import { managerRouter } from "./src/managers/managerControllers.js"
 import { talentRouter } from "./src/talents/talentControllers.js"
+import { scheduleRouter } from "./src/schedules/scheduleControllers.js"
 dotenv.config()
 
 var app = express();
@@ -49,6 +50,7 @@ app.use(session({
 
 app.use("/", managerRouter);
 app.use("/talent", talentRouter);
+app.use("/schedule", scheduleRouter);
 app.get('/public/home.html', function (req, res) {
   var sql = "SELECT * FROM talents";
   con.query(sql, function(err, results) {

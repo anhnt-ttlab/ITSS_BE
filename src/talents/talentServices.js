@@ -1,5 +1,4 @@
-import bcrypt from 'bcrypt'
-import { con, query } from "../../server.js";
+import { query } from "../../server.js";
 
 
 let findTalentsByEmail = async (body) => {
@@ -15,6 +14,17 @@ let findTalentsByEmail = async (body) => {
 
 let findTalentById = async (id) => {
   var sql = "SELECT * FROM talents where talent_id = ?";
+  try {
+    const rows = await query(sql, [id]);
+    return rows[0]
+  } catch(err) {
+    console.log(err)
+    throw err
+  } finally {}
+}
+
+let findCourseById = async (id) => {
+  var sql = "SELECT * FROM courses where course_id = ?";
   try {
     const rows = await query(sql, [id]);
     return rows[0]
@@ -97,5 +107,6 @@ export {
     getListTalents,
     deleteTalentById,
     updateTalent,
-    findTalentById
+    findTalentById,
+    findCourseById
 };

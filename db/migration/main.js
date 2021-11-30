@@ -25,7 +25,7 @@ con.connect(function(err) {
     console.log("Table talents created");
   });
 
-  var sql = "CREATE TABLE courses (course_id INT AUTO_INCREMENT, course_name VARCHAR(255), time datetime, creator_id INT, PRIMARY KEY (course_id), FOREIGN KEY (creator_id) REFERENCES managers(manager_id))";
+  var sql = "CREATE TABLE courses (course_id INT AUTO_INCREMENT, course_name VARCHAR(255), time VARCHAR(255), creator_id INT, PRIMARY KEY (course_id), FOREIGN KEY (creator_id) REFERENCES managers(manager_id))";
   con.query(sql, function (err, result) {
     if (err) throw err;
     console.log("Table courses created");
