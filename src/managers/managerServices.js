@@ -48,12 +48,10 @@ async function register (body) {
 let signIn = async (req) => {
   let user = await findManagers(req.body);
   if (!user.length) {
-    con.end()
     return false;
   } else {
     let comparePass = await bcrypt.compare(req.body.password, user[0].password);
     if (comparePass === false) {
-      con.end()
       return false;
     } else {
       req.session.user = user;
