@@ -2,10 +2,10 @@
 
 import express from "express"
 import { isLogging } from "../managers/managerServices.js"
-import {getListSchedulesByTalentId} from "./scheduleServices.js"
-import {createSchedule} from "./scheduleServices.js"
+import {getListSchedulesByTalentId, findScheduleByInfo} from "./scheduleServices.js"
+import {createSchedule, deleteSchedule} from "./scheduleServices.js"
 import {findTalentById, findCourseById} from "../talents/talentServices.js"
-import {createScheduleValidator} from "./scheduleValidators.js"
+import {createScheduleValidator, deleteScheduleValidator} from "./scheduleValidators.js"
 let scheduleRouter = new express.Router();
 
 scheduleRouter.post("/", async (req, res, next) => {
@@ -21,6 +21,13 @@ scheduleRouter.post("/", async (req, res, next) => {
         statusCode: 401
     });
     }
+    var checkExistSchedule = await findScheduleByInfo(req.body);
+    if (checkExistSchedule) {
+        return res.send({
+            message: "Schedule has already existed",
+            statusCode: 409
+        })
+    }
     var currentTalent = await findTalentById(req.body.talentId);
     if (!currentTalent) {
         return res.send({
@@ -28,7 +35,7 @@ scheduleRouter.post("/", async (req, res, next) => {
             statusCode: 404
         })
     }
-    var currentCourse = await findCourseById(req.body.course_id);
+    var currentCourse = await findCourseById(req.body.courseId);
     if (!currentCourse) {
         return res.send({
             message: "Course not found",
@@ -49,6 +56,58 @@ scheduleRouter.post("/", async (req, res, next) => {
     } else {
         return res.send({
         message: "Create schedule failed.",
+        statusCode: 422
+        });
+    }
+  } catch (error) {
+    console.log(error)
+    return res.status(500).send({error: "Server Error"});
+  }
+});
+
+scheduleRouter.delete("/", async (req, res, next) => {
+  try {
+    let validator = await deleteScheduleValidator(req);
+    if (validator !== null) {
+      return res.send({message: validator});
+    }
+    let isLogged = await isLogging(req);
+    if (isLogged === false) {
+    return res.send({
+        message: "You haven't logged in.",
+        statusCode: 401
+    });
+    }
+    var checkExistSchedule = await findScheduleByInfo(req.body);
+    if (!checkExistSchedule) {
+        return res.send({
+            message: "Schedule not found",
+            statusCode: 404
+        })
+    }
+    var currentTalent = await findTalentById(req.body.talentId);
+    if (!currentTalent) {
+        return res.send({
+            message: "Talent not found",
+            statusCode: 404
+        })
+    }
+    var currentCourse = await findCourseById(req.body.courseId);
+    if (!currentCourse) {
+        return res.send({
+            message: "Course not found",
+            statusCode: 404
+        })
+    }
+    let result = await deleteSchedule(req.body);
+    if (result) {
+        return res.send({
+        message: "Delete schedule successfully.",
+        statusCode: 200
+        });
+    } else {
+        return res.send({
+        message: "Delete schedule failed.",
         statusCode: 422
         });
     }

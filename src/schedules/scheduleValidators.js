@@ -9,12 +9,20 @@ let raiseErr = async (req) => {
   }
 
   let createScheduleValidator = async (req) => {
-    req.check('talent_id', 'talent id is required.').not().isEmpty();
-    req.check('course_id', 'course id is required.').not().isEmpty();
+    req.check('talentId', 'talent id is required.').not().isEmpty();
+    req.check('courseId', 'course id is required.').not().isEmpty();
     //check for errors
     return await raiseErr(req);
   }
   
+  let deleteScheduleValidator = async (req) => {
+    req.check('talentId', 'talent id is required.').not().isEmpty();
+    req.check('courseId', 'course id is required.').not().isEmpty();
+    //check for errors
+    return await raiseErr(req);
+  }
+
  export {
     createScheduleValidator,
+    deleteScheduleValidator
   };
