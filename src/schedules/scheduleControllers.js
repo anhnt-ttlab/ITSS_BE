@@ -1,5 +1,3 @@
-// src/users/controllers.js
-
 import express from "express"
 import { isLogging } from "../managers/managerServices.js"
 import {getListSchedulesByTalentId, findScheduleByInfo} from "./scheduleServices.js"
@@ -145,75 +143,6 @@ scheduleRouter.get("/", async (req, res, next) => {
     return res.status(500).send({error: "Server Error"});
   }
 });
-
-// talentRouter.get("/:id", async (req, res, next) => {
-//   try {
-//     let isLogged = await isLogging(req);
-//     if (isLogged === false) {
-//       return res.send({
-//         message: "You haven't logged in.",
-//         statusCode: 401
-//       });
-//     } else {
-//         var talentDetail = await findTalentById(req.params.id);
-//         if (!talentDetail) {
-//           res.send({
-//             message: "Talent not found",
-//             statusCode: 404
-//           })
-//         } else {
-//         var managerInfo = await findManagerById(talentDetail.manager_id);
-//         if (!managerInfo) {
-//           res.send({
-//             message: "Manager not found",
-//             statusCode: 404
-//           })
-//         } else {
-//           return res.send({
-//             status: 200,
-//             message: "Get talent detail successfully.",
-//             talent: {
-//               ...talentDetail,
-//               manager_name: managerInfo.full_name
-//             },
-//         });
-//         }
-//       }
-//     }
-//   } catch (error) {
-//     console.log(error)
-//     return res.status(500).send({error: "Server Error"});
-//   }
-// });
-
-// talentRouter.delete("/:id", async (req, res, next) => {
-//   try {
-//     let isLogged = await isLogging(req);
-//     if (isLogged === false) {
-//       return res.send({
-//         message: "You haven't logged in.",
-//         statusCode: 401
-//       });
-//     } else {
-//         var talentDeleted = await deleteTalentById(req.params.id);
-//         if (!talentDeleted) {
-//           res.send({
-//             message: "Talent not found",
-//             statusCode: 404
-//           })
-//         } else {
-//           return res.send({
-//             message: "Delete talent successfully.",
-//             talentDeleted,
-//             statusCode: 200
-//         });
-//         }
-//     }
-//   } catch (error) {
-//     console.log(error)
-//     return res.status(500).send({error: "Server Error"});
-//   }
-// });
 
 export {
     scheduleRouter
