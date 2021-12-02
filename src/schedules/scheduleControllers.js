@@ -65,10 +65,10 @@ scheduleRouter.post("/", async (req, res, next) => {
 
 scheduleRouter.delete("/", async (req, res, next) => {
   try {
-    let validator = await deleteScheduleValidator(req);
-    if (validator !== null) {
-      return res.send({message: validator});
-    }
+    // let validator = await deleteScheduleValidator(req);
+    // if (validator !== null) {
+    //   return res.send({message: validator});
+    // }
     let isLogged = await isLogging(req);
     if (isLogged === false) {
     return res.send({
@@ -76,28 +76,28 @@ scheduleRouter.delete("/", async (req, res, next) => {
         statusCode: 401
     });
     }
-    var checkExistSchedule = await findScheduleByInfo(req.body);
+    var checkExistSchedule = await findScheduleByInfo(req.params);
     if (!checkExistSchedule) {
         return res.send({
             message: "Schedule not found",
             statusCode: 404
         })
     }
-    var currentTalent = await findTalentById(req.body.talentId);
+    var currentTalent = await findTalentById(req.params.talentId);
     if (!currentTalent) {
         return res.send({
             message: "Talent not found",
             statusCode: 404
         })
     }
-    var currentCourse = await findCourseById(req.body.courseId);
+    var currentCourse = await findCourseById(req.params.courseId);
     if (!currentCourse) {
         return res.send({
             message: "Course not found",
             statusCode: 404
         })
     }
-    let result = await deleteSchedule(req.body);
+    let result = await deleteSchedule(req.params);
     if (result) {
         return res.send({
         message: "Delete schedule successfully.",
