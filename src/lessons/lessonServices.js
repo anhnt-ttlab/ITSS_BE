@@ -60,28 +60,29 @@ let getListLessons = async () => {
     return true;
   }
 
-//   async function deleteLessonById (id) {
-//     let lesson = await findLessonById(id);
-//     if (lesson) {
-//       try {
-//         var sql = "DELETE FROM lessons WHERE lesson_id = ?";
-//         var values = [id];
-//         await query(sql, values);
-//       } catch(error) {
-//         console.log(error)
-//         throw error
-//       }
-//       finally {}
-//       return id;
-//     } else {
-//       return false;
-//     }
-//   }
+  async function deleteLessonById (id) {
+    let lesson = await findLessonById(id);
+    if (lesson) {
+      try {
+        var sql = "DELETE FROM lessons WHERE lesson_id = ?";
+        var values = [id];
+        await query(sql, values);
+      } catch(error) {
+        console.log(error)
+        throw error
+      }
+      finally {}
+      return id;
+    } else {
+      return false;
+    }
+  }
 
 export {
     createLesson,
     getListLessons,
     findLessonById,
     updateLesson,
+    deleteLessonById,
     getListLessonsByCourseId
 };

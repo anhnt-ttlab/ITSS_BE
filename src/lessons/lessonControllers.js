@@ -1,6 +1,6 @@
 import express from "express"
 import { isLogging } from "../managers/managerServices.js"
-import {createLesson, getListLessonsByCourseId, findLessonById, updateLesson} from "./lessonServices.js"
+import {createLesson, getListLessonsByCourseId, findLessonById, updateLesson, deleteLessonById} from "./lessonServices.js"
 import {createLessonValidator, updateLessonValidator} from "./lessonValidators.js"
 let lessonRouter = new express.Router();
 
