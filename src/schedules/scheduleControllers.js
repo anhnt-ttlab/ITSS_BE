@@ -76,28 +76,28 @@ scheduleRouter.delete("/", async (req, res, next) => {
         statusCode: 401
     });
     }
-    var checkExistSchedule = await findScheduleByInfo(req.params);
+    var checkExistSchedule = await findScheduleByInfo(req.query);
     if (!checkExistSchedule) {
         return res.send({
             message: "Schedule not found",
             statusCode: 404
         })
     }
-    var currentTalent = await findTalentById(req.params.talentId);
+    var currentTalent = await findTalentById(req.query.talentId);
     if (!currentTalent) {
         return res.send({
             message: "Talent not found",
             statusCode: 404
         })
     }
-    var currentCourse = await findCourseById(req.params.courseId);
+    var currentCourse = await findCourseById(req.query.courseId);
     if (!currentCourse) {
         return res.send({
             message: "Course not found",
             statusCode: 404
         })
     }
-    let result = await deleteSchedule(req.params);
+    let result = await deleteSchedule(req.query);
     if (result) {
         return res.send({
         message: "Delete schedule successfully.",
