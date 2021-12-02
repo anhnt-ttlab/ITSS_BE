@@ -1,5 +1,5 @@
-var mysql = require('mysql');
-var dotenv = require('dotenv');
+import mysql from 'mysql';
+import dotenv from 'dotenv';
 dotenv.config({ path: '../../.env' });
 
 var con = mysql.createConnection({
@@ -31,7 +31,7 @@ con.connect(function(err) {
     console.log("Table courses created");
   });
 
-  var sql = "CREATE TABLE lessons (lesson_id INT AUTO_INCREMENT, lesson_name VARCHAR(255), time datetime, course_id INT, PRIMARY KEY (lesson_id), FOREIGN KEY (course_id) REFERENCES courses(course_id))";
+  var sql = "CREATE TABLE lessons (lesson_id INT AUTO_INCREMENT, lesson_name VARCHAR(255), time VARCHAR(255), course_id INT, PRIMARY KEY (lesson_id), FOREIGN KEY (course_id) REFERENCES courses(course_id))";
   con.query(sql, function (err, result) {
     if (err) throw err;
     console.log("Table lessons created");

@@ -1,12 +1,12 @@
 import express from "express"
 import { isLogging } from "../managers/managerServices.js"
-import {createCourse, getListCourses, findCourseById, deleteCourseById, updateCourse} from "./courseServices.js"
-import {createCourseValidator, updateCourseValidator} from "./courseValidators.js"
-let courseRouter = new express.Router();
+import {createLesson, getListLessons, findLessonById, updateLesson} from "./lessonServices.js"
+import {createLessonValidator, updateLessonValidator} from "./lessonValidators.js"
+let lessonRouter = new express.Router();
 
-courseRouter.post("/", async (req, res, next) => {
+lessonRouter.post("/", async (req, res, next) => {
   try {
-    let validator = await createCourseValidator(req);
+    let validator = await createLessonValidator(req);
     if (validator !== null) {
       return res.send({message: validator});
     }
@@ -17,18 +17,20 @@ courseRouter.post("/", async (req, res, next) => {
         statusCode: 401
     });
     }
-    req.body.creatorId = req.session.user[0].manager_id
-    let courseCreated = await createCourse(req.body);
-    if (courseCreated) {
-      var finalResult = await findCourseById(courseCreated);
+    let lessonCreated = await createLesson(req.body);
+    let result = {
+        newLesson: lessonCreated
+    }
+    console.log("lessonCreated",lessonCreated)
+    if (lessonCreated) {
         return res.send({
-        message: "Create course successfully.",
-        newCourse: finalResult,
+        message: "Create lesson successfully.",
+        newLesson: result,
         statusCode: 200
         });
     } else {
         return res.send({
-        message: "Create course failed.",
+        message: "Create lesson failed.",
         statusCode: 422
         });
     }
@@ -38,9 +40,9 @@ courseRouter.post("/", async (req, res, next) => {
   }
 });
 
-courseRouter.patch("/", async (req, res, next) => {
+lessonRouter.patch("/", async (req, res, next) => {
     try {
-      let validator = await updateCourseValidator(req);
+      let validator = await updateLessonValidator(req);
       if (validator !== null) {
         return res.send({message: validator});
       }
@@ -51,24 +53,27 @@ courseRouter.patch("/", async (req, res, next) => {
           statusCode: 401
       });
       }
-      var currentCourse = await findCourseById(req.body.courseId);
-      if (!currentCourse) {
+      var currentLesson = await findLessonById(req.body.lessonId);
+      if (!currentLesson) {
           return res.send({
-              message: "Course not found",
+              message: "Lesson not found",
               statusCode: 404
           })
       }
-      let updatedCourse = await updateCourse(req.body);
-      if (updatedCourse) {
-        var finalResult = await findCourseById(req.body.courseId);
+      let updatedLesson = await updateLesson(req.body);
+      var updatedLessonResult = await findLessonById(req.body.lessonId);
+      let result = {
+          updatedLesson: updatedLessonResult
+      }
+      if (updatedLesson) {
           return res.send({
-          message: "Update course successfully.",
-          updatedCourse: finalResult,
+          message: "Update lesson successfully.",
+          newLesson: result,
           statusCode: 200
           });
       } else {
           return res.send({
-          message: "Update course failed.",
+          message: "Update lesson failed.",
           statusCode: 422
           });
       }
@@ -78,7 +83,7 @@ courseRouter.patch("/", async (req, res, next) => {
     }
   });
 
-courseRouter.get("/", async (req, res, next) => {
+lessonRouter.get("/", async (req, res, next) => {
     try {
       let isLogged = await isLogging(req);
       if (isLogged === false) {
@@ -87,10 +92,10 @@ courseRouter.get("/", async (req, res, next) => {
           statusCode: 401
         });
       } else {
-          var listResult = await getListCourses();
+          var listResult = await getListLessons();
           return res.send({
-              message: "Get list courses successfully.",
-              courses: listResult,
+              message: "Get list lessons successfully.",
+              lessons: listResult,
               statusCode: 200
           });
       }
@@ -100,7 +105,7 @@ courseRouter.get("/", async (req, res, next) => {
     }
   });
 
-  courseRouter.delete("/:id", async (req, res, next) => {
+  lessonRouter.delete("/:id", async (req, res, next) => {
     try {
       let isLogged = await isLogging(req);
       if (isLogged === false) {
@@ -109,16 +114,16 @@ courseRouter.get("/", async (req, res, next) => {
           statusCode: 401
         });
       } else {
-          var courseDeleted = await deleteCourseById(req.params.id);
-          if (!courseDeleted) {
+          var lessonDeleted = await deleteLessonById(req.params.id);
+          if (!lessonDeleted) {
             res.send({
-              message: "Course not found",
+              message: "Lesson not found",
               statusCode: 404
             })
           } else {
             return res.send({
-              message: "Delete course successfully.",
-              courseDeleted,
+              message: "Delete lesson successfully.",
+              lessonDeleted,
               statusCode: 200
           });
           }
@@ -130,5 +135,5 @@ courseRouter.get("/", async (req, res, next) => {
   });
   
 export {
-    courseRouter
+    lessonRouter
 }
