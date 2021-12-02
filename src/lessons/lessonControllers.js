@@ -59,13 +59,10 @@ lessonRouter.patch("/", async (req, res, next) => {
       }
       let updatedLesson = await updateLesson(req.body);
       var updatedLessonResult = await findLessonById(req.body.lessonId);
-      let result = {
-          updatedLesson: updatedLessonResult
-      }
       if (updatedLesson) {
           return res.send({
           message: "Update lesson successfully.",
-          newLesson: result,
+          updatedLesson: updatedLessonResult,
           statusCode: 200
           });
       } else {
