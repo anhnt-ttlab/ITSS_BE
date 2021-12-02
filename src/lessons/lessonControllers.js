@@ -18,14 +18,11 @@ lessonRouter.post("/", async (req, res, next) => {
     });
     }
     let lessonCreated = await createLesson(req.body);
-    let result = {
-        newLesson: lessonCreated
-    }
-    console.log("lessonCreated",lessonCreated)
     if (lessonCreated) {
+      var finalResult = await findLessonById(lessonCreated);
         return res.send({
         message: "Create lesson successfully.",
-        newLesson: result,
+        newLesson: finalResult,
         statusCode: 200
         });
     } else {

@@ -5,7 +5,6 @@ async function createCourse (body) {
       var sql = "INSERT INTO courses (course_name, time, creator_id) VALUES(?,?,?)";
       var values = [body.courseName, body.courseTime, body.creatorId];
       var result = await query(sql, values);
-      console.log("result", result)
       return result.insertId;
     } catch(error) {
       console.log(error)
