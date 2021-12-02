@@ -13,6 +13,18 @@ async function createLesson (body) {
     finally {}
 }
 
+let getListLessonsByCourseId = async (courseId) => {
+  try {
+      var sql = "SELECT * FROM lessons where course_id = ?";
+      var values = [courseId]
+      const rows = await query(sql, values);
+      return rows
+  } catch(err) {
+      console.log(err)
+      throw err
+  } finally {}
+}
+
 let getListLessons = async () => {
     try {
         var sql = "SELECT * FROM lessons";
@@ -70,5 +82,6 @@ export {
     createLesson,
     getListLessons,
     findLessonById,
-    updateLesson
+    updateLesson,
+    getListLessonsByCourseId
 };

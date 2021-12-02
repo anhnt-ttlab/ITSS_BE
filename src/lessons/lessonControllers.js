@@ -1,6 +1,6 @@
 import express from "express"
 import { isLogging } from "../managers/managerServices.js"
-import {createLesson, getListLessons, findLessonById, updateLesson} from "./lessonServices.js"
+import {createLesson, getListLessonsByCourseId, findLessonById, updateLesson} from "./lessonServices.js"
 import {createLessonValidator, updateLessonValidator} from "./lessonValidators.js"
 let lessonRouter = new express.Router();
 
@@ -89,10 +89,17 @@ lessonRouter.get("/", async (req, res, next) => {
           statusCode: 401
         });
       } else {
-          var listResult = await getListLessons();
+        var listResult = await getListLessonsByCourseId(req.query.courseId);
+        var result = await Promise.all(listResult.map(async (item) => {
+            var lesson = await findLessonById(item.lesson_id);
+            return {
+                ...lesson
+            }
+        }))
+          // var listResult = await getListLessons();
           return res.send({
               message: "Get list lessons successfully.",
-              lessons: listResult,
+              lessons: result,
               statusCode: 200
           });
       }
