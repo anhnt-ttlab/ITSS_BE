@@ -11,6 +11,7 @@ import { talentRouter } from "./src/talents/talentControllers.js"
 import { scheduleRouter } from "./src/schedules/scheduleControllers.js"
 import { courseRouter } from "./src/courses/courseControllers.js"
 import { lessonRouter } from "./src/lessons/lessonControllers.js"
+import { scoreRouter } from "./src/scores/scoreControllers.js"
 dotenv.config()
 
 var app = express();
@@ -55,6 +56,7 @@ app.use("/talent", talentRouter);
 app.use("/course", courseRouter);
 app.use("/schedule", scheduleRouter);
 app.use("/lesson", lessonRouter);
+app.use("/score", scoreRouter);
 app.get('/public/home.html', function (req, res) {
   var sql = "SELECT * FROM talents";
   con.query(sql, function(err, results) {

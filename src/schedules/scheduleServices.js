@@ -23,6 +23,16 @@ let getListSchedules = async (body) => {
     } finally {}
   }
   
+  let findSchedulesByCourseId = async (courseId) => {
+    var sql = "SELECT * FROM schedules where course_id = ?";
+    try {
+      const rows = await query(sql, [courseId]);
+      return rows
+    } catch(err) {
+      console.log(err)
+      throw err
+    } finally {}
+  }
 
   let getListSchedulesByTalentId = async (talentId) => {
     try {
@@ -62,49 +72,50 @@ async function deleteSchedule (body) {
   finally {}
 }
 
-async function updateSchedule (body) {
-  let schedules = await findSchedulesByEmail(body);
-  if (!schedules.length || schedules[0].schedule_id == body.schedule_id) {
-    try {
-      var sql = "UPDATE schedules SET name = ?, email = ?, avatar = ? WHERE schedule_id = ?;";
-      var values = [body.name, body.email, body.avatar, body.schedule_id];
-      await query(sql, values);
-      var result = await findSchedulesByEmail(body)
-    } catch(error) {
-      console.log(error)
-      throw error
-    }
-    finally {}
-    return result;
-  } else {
-    return false;
-  }
-}
+// async function updateSchedule (body) {
+//   let schedules = await findSchedulesByEmail(body);
+//   if (!schedules.length || schedules[0].schedule_id == body.schedule_id) {
+//     try {
+//       var sql = "UPDATE schedules SET name = ?, email = ?, avatar = ? WHERE schedule_id = ?;";
+//       var values = [body.name, body.email, body.avatar, body.schedule_id];
+//       await query(sql, values);
+//       var result = await findSchedulesByEmail(body)
+//     } catch(error) {
+//       console.log(error)
+//       throw error
+//     }
+//     finally {}
+//     return result;
+//   } else {
+//     return false;
+//   }
+// }
 
-async function deleteScheduleById (id) {
-  let schedule = await findScheduleById(id);
-  if (schedule) {
-    try {
-      var sql = "DELETE FROM schedules WHERE schedule_id = ?";
-      var values = [id];
-      await query(sql, values);
-    } catch(error) {
-      console.log(error)
-      throw error
-    }
-    finally {}
-    return id;
-  } else {
-    return false;
-  }
-}
+// async function deleteScheduleById (id) {
+//   let schedule = await findScheduleById(id);
+//   if (schedule) {
+//     try {
+//       var sql = "DELETE FROM schedules WHERE schedule_id = ?";
+//       var values = [id];
+//       await query(sql, values);
+//     } catch(error) {
+//       console.log(error)
+//       throw error
+//     }
+//     finally {}
+//     return id;
+//   } else {
+//     return false;
+//   }
+// }
 
 export {
     createSchedule,
     getListSchedules,
     deleteSchedule,
+    findSchedulesByCourseId,
     findScheduleByInfo,
-    deleteScheduleById,
-    updateSchedule,
+    // deleteScheduleById,
+    // updateSchedule,
     getListSchedulesByTalentId
 };

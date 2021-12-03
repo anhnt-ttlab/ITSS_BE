@@ -2,6 +2,8 @@ import express from "express"
 import { isLogging } from "../managers/managerServices.js"
 import {createLesson, getListLessonsByCourseId, findLessonById, updateLesson, deleteLessonById} from "./lessonServices.js"
 import {createLessonValidator, updateLessonValidator} from "./lessonValidators.js"
+import { findSchedulesByCourseId } from "../schedules/scheduleServices.js"
+import { createScore } from "../scores/scoreServices.js"
 let lessonRouter = new express.Router();
 
 lessonRouter.post("/", async (req, res, next) => {
@@ -19,6 +21,18 @@ lessonRouter.post("/", async (req, res, next) => {
     }
     let lessonCreated = await createLesson(req.body);
     if (lessonCreated) {
+      let schedulesList = await findSchedulesByCourseId(req.body.courseId);
+      var talentsId = await Promise.all(schedulesList.map(async (item) => {
+        return item.talent_id
+    }))
+    await Promise.all(talentsId.map(async (item) => {
+      await createScore({
+        talentId:item, 
+        courseId:req.body.courseId,
+        lessonId:lessonCreated
+      })
+      return 0
+    }))
       var finalResult = await findLessonById(lessonCreated);
         return res.send({
         message: "Create lesson successfully.",
