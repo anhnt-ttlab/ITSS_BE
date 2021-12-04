@@ -101,11 +101,16 @@ scoreRouter.get("/", async (req, res, next) => {
         var result = await Promise.all(listResult.map(async (item) => {
             var course = await findCourseById(item.course_id);
             var talent = await findTalentById(item.talent_id);
-            return  {
+            var lesson = await findLessonById(item.lesson_id);
+            var resultItem = {
                 ...course,
                 ...talent,
+                ...lesson,
+                time: lesson.time,
                 score: item.score
             }
+            delete resultItem.avatar;
+            return resultItem
         }))
         return res.send({
             message: "Get list scores successfully.",

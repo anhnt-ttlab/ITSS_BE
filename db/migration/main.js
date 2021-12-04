@@ -1,5 +1,5 @@
-var mysql = require("mysql");
-var dotenv = require("dotenv");
+import mysql from "mysql";
+import dotenv from "dotenv";
 dotenv.config({ path: "../../.env" });
 
 var con = mysql.createConnection({

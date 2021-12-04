@@ -39,6 +39,7 @@ let getListScoresByInfo = async (body) => {
 
 async function createScore (body) {
     try {
+      console.log("body", body)
       var sql = "INSERT INTO scores (talent_id, course_id, lesson_id, score) VALUES(?,?,?,0.0)";
       var values = [body.talentId, body.courseId, body.lessonId];
       await query(sql, values);

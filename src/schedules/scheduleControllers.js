@@ -1,9 +1,11 @@
 import express from "express"
 import { isLogging } from "../managers/managerServices.js"
-import {getListSchedulesByTalentId, findScheduleByInfo} from "./scheduleServices.js"
+import {getListSchedulesByTalentId, findScheduleByInfo, findSchedulesByCourseId} from "./scheduleServices.js"
 import {createSchedule, deleteSchedule} from "./scheduleServices.js"
 import {findTalentById, findCourseById} from "../talents/talentServices.js"
 import {createScheduleValidator, deleteScheduleValidator} from "./scheduleValidators.js"
+import {getListLessonsByCourseId} from "../lessons/lessonServices.js"
+import {createScore} from "../scores/scoreServices.js"
 let scheduleRouter = new express.Router();
 
 scheduleRouter.post("/", async (req, res, next) => {
@@ -41,6 +43,17 @@ scheduleRouter.post("/", async (req, res, next) => {
         })
     }
     let scheduleCreated = await createSchedule(req.body);
+    let scheduleInfo = await findScheduleByInfo(req.body);
+    let lessonsList = await getListLessonsByCourseId(scheduleInfo.course_id)
+    await Promise.all(lessonsList.map(async (item) => {
+      await createScore({
+        talentId:scheduleInfo.talent_id, 
+        courseId:scheduleInfo.course_id,
+        lessonId:item.lesson_id
+      })
+      return 0
+    }))
+      
     let result = {
         ...currentCourse,
         mean_score: 0.0

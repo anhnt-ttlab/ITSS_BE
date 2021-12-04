@@ -50,8 +50,8 @@ async function createSchedule (body) {
     try {
       var sql = "INSERT INTO schedules (talent_id, course_id, mean_score) VALUES(?,?,0.0)";
       var values = [body.talentId, body.courseId];
-      await query(sql, values);
-      return true;
+      var result = await query(sql, values);
+      return result;
     } catch(error) {
       console.log(error)
       return false;
