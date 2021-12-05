@@ -70,6 +70,20 @@ async function updateScore (body) {
       var values = [body.score, body.talentId, body.lessonId];
       await query(sql, values);
       var result = await findScoreByInfo(body)
+      var findScoreSql = "SELECT * FROM scores WHERE talent_id = ? and course_id = ?;";
+      var valuesFindScore = [result.talent_id, result.course_id];
+      var mean_score = 0.0;
+      var scoreList = await query(findScoreSql, valuesFindScore);
+      if (scoreList.length) {
+        await Promise.all(scoreList.map(async (item) => {
+          mean_score = mean_score + item.score
+          return 0
+        }))
+        mean_score = mean_score/scoreList.length
+        var updateMeanScoreSql = "UPDATE schedules SET mean_score = ? WHERE talent_id = ? and course_id = ?;";
+        var valuesUpdateMeanScoreSql = [mean_score, result.talent_id, result.course_id];
+        await query(updateMeanScoreSql, valuesUpdateMeanScoreSql);
+      }
     } catch(error) {
       console.log(error)
       throw error
