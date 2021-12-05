@@ -13,6 +13,17 @@ async function createCourse (body) {
     finally {}
 }
 
+let findCourseByInfo = async (body) => {
+  var sql = "SELECT * FROM courses where course_name = ? and time = ?";
+  try {
+    const rows = await query(sql, [body.courseName, body.courseTime]);
+    return rows[0]
+  } catch(err) {
+    console.log(err)
+    throw err
+  } finally {}
+}
+
 let getListCourses = async () => {
     try {
         var sql = "SELECT * FROM courses";
@@ -71,5 +82,6 @@ export {
     getListCourses,
     findCourseById,
     updateCourse,
+    findCourseByInfo,
     deleteCourseById
 };

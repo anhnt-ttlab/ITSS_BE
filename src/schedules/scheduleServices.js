@@ -64,6 +64,9 @@ async function deleteSchedule (body) {
     var sql = "DELETE FROM schedules WHERE talent_id = ? and course_id = ?";
     var values = [body.talentId, body.courseId];
     await query(sql, values);
+    var deleteScoreSql = "DELETE FROM scores WHERE talent_id = ? and course_id = ?";
+    var deleteScoreValues = [body.talentId, body.courseId];
+    await query(deleteScoreSql, deleteScoreValues);
     return true;
   } catch(error) {
     console.log(error)

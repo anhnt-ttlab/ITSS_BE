@@ -1,6 +1,6 @@
 import express from "express"
 import { isLogging } from "../managers/managerServices.js"
-import {createLesson, getListLessonsByCourseId, findLessonById, updateLesson, deleteLessonById} from "./lessonServices.js"
+import {createLesson, getListLessonsByCourseId, findLessonById, updateLesson, deleteLessonById, findLessonByInfo} from "./lessonServices.js"
 import {createLessonValidator, updateLessonValidator} from "./lessonValidators.js"
 import { findSchedulesByCourseId } from "../schedules/scheduleServices.js"
 import { createScore } from "../scores/scoreServices.js"
@@ -18,6 +18,13 @@ lessonRouter.post("/", async (req, res, next) => {
         message: "You haven't logged in.",
         statusCode: 401
     });
+    }
+    var checkExistLesson = await findLessonByInfo(req.body);
+    if (checkExistLesson) {
+        return res.send({
+            message: "Lesson has already existed",
+            statusCode: 409
+        })
     }
     let lessonCreated = await createLesson(req.body);
     if (lessonCreated) {

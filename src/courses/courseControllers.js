@@ -1,6 +1,6 @@
 import express from "express"
 import { isLogging } from "../managers/managerServices.js"
-import {createCourse, getListCourses, findCourseById, deleteCourseById, updateCourse} from "./courseServices.js"
+import {createCourse, getListCourses, findCourseById, deleteCourseById, updateCourse, findCourseByInfo} from "./courseServices.js"
 import {createCourseValidator, updateCourseValidator} from "./courseValidators.js"
 let courseRouter = new express.Router();
 
@@ -16,6 +16,13 @@ courseRouter.post("/", async (req, res, next) => {
         message: "You haven't logged in.",
         statusCode: 401
     });
+    }
+    var checkExistCourse = await findCourseByInfo(req.body);
+    if (checkExistCourse) {
+        return res.send({
+            message: "Course has already existed",
+            statusCode: 409
+        })
     }
     req.body.creatorId = req.session.user[0].manager_id
     let courseCreated = await createCourse(req.body);
