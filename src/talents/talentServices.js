@@ -71,7 +71,7 @@ async function updateTalent (body) {
       var sql = "UPDATE talents SET name = ?, email = ?, avatar = ? WHERE talent_id = ?;";
       var values = [body.name, body.email, body.avatar, body.talent_id];
       await query(sql, values);
-      var result = await findTalentsByEmail(body)
+      var result = await findTalentById(body.talent_id)
     } catch(error) {
       console.log(error)
       throw error

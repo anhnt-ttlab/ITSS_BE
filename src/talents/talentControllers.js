@@ -2,7 +2,7 @@
 
 import express from "express"
 import {findManagerById, isLogging} from "../managers/managerServices.js"
-import {createTalent, getListTalents, findTalentById, updateTalent, deleteTalentById} from "./talentServices.js"
+import {createTalent, getListTalents, findTalentById, updateTalent, deleteTalentById, findTalentsByEmail} from "./talentServices.js"
 import {createTalentValidator, updateTalentValidator} from "./talentValidators.js"
 let talentRouter = new express.Router();
 
@@ -54,21 +54,30 @@ talentRouter.patch("/", async (req, res, next) => {
           statusCode: 401
         });
       } else {
+        if (req.body.email) {
+          var checkExistEmail = await findTalentsByEmail(req.body)
+          console.log("rga444", currentTalent)
+          if (checkExistEmail.length) {
+            return res.send({
+              message: "Email has been used.",
+              statusCode: 422
+            });
+          }
+        }
         var currentTalent = await findTalentById(req.body.talent_id)
         if (!currentTalent) {
           res.send({message: "Talent not found"})
         } else {
           let talentUpdated = await updateTalent(req.body);
           if (talentUpdated) {
+            var currentManager = await findManagerById(talentUpdated.manager_id)
             return res.send({
               message: "Update talent successfully.",
-              edittedTalent: talentUpdated,
+              editedTalent: {
+                ...talentUpdated,
+                manager_name:currentManager.full_name,
+              },
               statusCode: 200
-            });
-          } else {
-            return res.send({
-              message: "Email has been used.",
-              statusCode: 422
             });
           }
         }
