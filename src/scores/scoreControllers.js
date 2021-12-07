@@ -52,9 +52,11 @@ scoreRouter.patch("/", async (req, res, next) => {
     if (scoreUpdated) {
         var course = await findCourseById(scoreUpdated.course_id);
         var talent = await findTalentById(scoreUpdated.talent_id);
+        var lesson = await findLessonById(scoreUpdated.lesson_id);
         var result = {
             ...course,
             ...talent,
+            ...lesson,
             score: req.body.score
         }
         return res.send({
