@@ -56,8 +56,7 @@ talentRouter.patch("/", async (req, res, next) => {
       } else {
         if (req.body.email) {
           var checkExistEmail = await findTalentsByEmail(req.body)
-          console.log("rga444", currentTalent)
-          if (checkExistEmail.length) {
+          if (checkExistEmail.length && checkExistEmail.talent_id != req.body.talent_id) {
             return res.send({
               message: "Email has been used.",
               statusCode: 422
