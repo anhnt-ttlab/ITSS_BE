@@ -24,6 +24,17 @@ let findCourseByInfo = async (body) => {
   } finally {}
 }
 
+let findLessonNumberByCourseId = async (courseId) => {
+  var sql = "SELECT COUNT(lesson_id) AS lesson_number FROM lessons where course_id = ?";
+  try {
+    const result = await query(sql, [courseId]);
+    return result
+  } catch(err) {
+    console.log(err)
+    throw err
+  } finally {}
+}
+
 let getListCourses = async () => {
     try {
         var sql = "SELECT * FROM courses";
@@ -83,5 +94,6 @@ export {
     findCourseById,
     updateCourse,
     findCourseByInfo,
-    deleteCourseById
+    deleteCourseById,
+    findLessonNumberByCourseId
 };
