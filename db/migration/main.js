@@ -35,7 +35,7 @@ con.connect(function (err) {
   });
 
   var sql =
-    "CREATE TABLE lessons (lesson_id INT AUTO_INCREMENT, lesson_name VARCHAR(255), time VARCHAR(255), course_id INT, PRIMARY KEY (lesson_id), FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE)";
+    "CREATE TABLE lessons (lesson_id INT AUTO_INCREMENT, lesson_name VARCHAR(255), course_id INT, PRIMARY KEY (lesson_id), FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE)";
   con.query(sql, function (err, result) {
     if (err) throw err;
     console.log("Table lessons created");
@@ -64,6 +64,13 @@ con.connect(function (err) {
 
   var sql =
     "CREATE TABLE talentClasses (score INT, talent_id INT, class_id INT, FOREIGN KEY (talent_id) REFERENCES talents(talent_id) ON DELETE CASCADE, FOREIGN KEY (class_id) REFERENCES classes(class_id) ON DELETE CASCADE)";
+  con.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log("Table talentClasses created");
+  });
+
+  var sql =
+    "CREATE TABLE classesLessons (class_id INT, lesson_id INT, time VARCHAR(255), FOREIGN KEY (lesson_id) REFERENCES lessons(lesson_id) ON DELETE CASCADE, FOREIGN KEY (class_id) REFERENCES classes(class_id) ON DELETE CASCADE)";
   con.query(sql, function (err, result) {
     if (err) throw err;
     console.log("Table talentClasses created");
