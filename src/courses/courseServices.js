@@ -2,8 +2,8 @@ import { query } from "../../server.js";
 
 async function createCourse (body) {
     try {
-      var sql = "INSERT INTO courses (course_name, time, creator_id) VALUES(?,?,?)";
-      var values = [body.courseName, body.courseTime, body.creatorId];
+      var sql = "INSERT INTO courses (course_name, creator_id) VALUES(?,?)";
+      var values = [body.courseName, body.creatorId];
       var result = await query(sql, values);
       return result.insertId;
     } catch(error) {
@@ -14,9 +14,9 @@ async function createCourse (body) {
 }
 
 let findCourseByInfo = async (body) => {
-  var sql = "SELECT * FROM courses where course_name = ? and time = ?";
+  var sql = "SELECT * FROM courses where course_name = ?";
   try {
-    const rows = await query(sql, [body.courseName, body.courseTime]);
+    const rows = await query(sql, [body.courseName]);
     return rows[0]
   } catch(err) {
     console.log(err)
@@ -26,6 +26,17 @@ let findCourseByInfo = async (body) => {
 
 let findLessonNumberByCourseId = async (courseId) => {
   var sql = "SELECT COUNT(lesson_id) AS lesson_number FROM lessons where course_id = ?";
+  try {
+    const result = await query(sql, [courseId]);
+    return result
+  } catch(err) {
+    console.log(err)
+    throw err
+  } finally {}
+}
+
+let findClassNumberByCourseId = async (courseId) => {
+  var sql = "SELECT COUNT(class_id) AS class_number FROM classes where course_id = ?";
   try {
     const result = await query(sql, [courseId]);
     return result
@@ -59,8 +70,8 @@ let getListCourses = async () => {
 
   async function updateCourse (body) {
     try {
-    var sql = "UPDATE courses SET course_name = ?, time = ? WHERE course_id = ?;";
-    var values = [body.courseName, body.courseTime, body.courseId];
+    var sql = "UPDATE courses SET course_name = ? WHERE course_id = ?;";
+    var values = [body.courseName, body.courseId];
     await query(sql, values);
     } catch(error) {
     console.log(error)
@@ -95,5 +106,6 @@ export {
     updateCourse,
     findCourseByInfo,
     deleteCourseById,
-    findLessonNumberByCourseId
+    findLessonNumberByCourseId,
+    findClassNumberByCourseId
 };

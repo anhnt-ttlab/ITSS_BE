@@ -1,6 +1,6 @@
 import express from "express"
-import { isLogging } from "../managers/managerServices.js"
-import {createCourse, getListCourses, findCourseById, deleteCourseById, updateCourse, findCourseByInfo, findLessonNumberByCourseId} from "./courseServices.js"
+import { findManagerById, isLogging } from "../managers/managerServices.js"
+import {createCourse, getListCourses, findCourseById, deleteCourseById, updateCourse, findCourseByInfo, findLessonNumberByCourseId, findClassNumberByCourseId} from "./courseServices.js"
 import {createCourseValidator, updateCourseValidator} from "./courseValidators.js"
 let courseRouter = new express.Router();
 
@@ -28,9 +28,17 @@ courseRouter.post("/", async (req, res, next) => {
     let courseCreated = await createCourse(req.body);
     if (courseCreated) {
       var finalResult = await findCourseById(courseCreated);
+      var manager = await findManagerById(finalResult.creator_id)
+      var lessonNumber = await findLessonNumberByCourseId(finalResult.course_id)
+      var classNumber = await findClassNumberByCourseId(finalResult.course_id)
         return res.send({
         message: "Create course successfully.",
-        newCourse: finalResult,
+        newCourse: {
+          ...finalResult,
+          lesson_number: lessonNumber[0].lesson_number,
+          class_number: classNumber[0].class_number,
+          creator_name: manager.full_name,
+        },
         statusCode: 200
         });
     } else {
@@ -68,9 +76,17 @@ courseRouter.patch("/", async (req, res, next) => {
       let updatedCourse = await updateCourse(req.body);
       if (updatedCourse) {
         var finalResult = await findCourseById(req.body.courseId);
+        var manager = await findManagerById(finalResult.creator_id)
+        var lessonNumber = await findLessonNumberByCourseId(finalResult.course_id)
+        var classNumber = await findClassNumberByCourseId(finalResult.course_id)
           return res.send({
           message: "Update course successfully.",
-          updatedCourse: finalResult,
+          updatedCourse: {
+            ...finalResult,
+            lesson_number: lessonNumber[0].lesson_number,
+            class_number: classNumber[0].class_number,
+            creator_name: manager.full_name,
+          },
           statusCode: 200
           });
       } else {
@@ -95,16 +111,20 @@ courseRouter.get("/", async (req, res, next) => {
         });
       } else {
           var listResult = await getListCourses();
-          var listResultWithLessonNumber = await Promise.all(listResult.map(async (item) => {
+          var listResultWithFullInfo = await Promise.all(listResult.map(async (item) => {
             var lessonNumber = await findLessonNumberByCourseId(item.course_id)
+            var classNumber = await findClassNumberByCourseId(item.course_id)
+            var manager = await findManagerById(item.creator_id)
             return {
               ...item,
-              lesson_number: lessonNumber[0].lesson_number
+              lesson_number: lessonNumber[0].lesson_number,
+              class_number: classNumber[0].class_number,
+              creator_name: manager.full_name
             }
         }))
           return res.send({
               message: "Get list courses successfully.",
-              courses: listResultWithLessonNumber,
+              courses: listResultWithFullInfo,
               statusCode: 200
           });
       }
