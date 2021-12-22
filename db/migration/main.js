@@ -49,17 +49,24 @@ con.connect(function (err) {
   });
 
   var sql =
-    "CREATE TABLE scores (score INT, talent_id INT, lesson_id INT, class_id INT, FOREIGN KEY (talent_id) REFERENCES talents(talent_id) ON DELETE CASCADE, FOREIGN KEY (lesson_id) REFERENCES lessons(lesson_id) ON DELETE CASCADE, FOREIGN KEY (class_id) REFERENCES classes(class_id) ON DELETE CASCADE)";
+    "CREATE TABLE scores (score INT, talent_id INT, lesson_id INT, FOREIGN KEY (talent_id) REFERENCES talents(talent_id) ON DELETE CASCADE, FOREIGN KEY (lesson_id) REFERENCES lessons(lesson_id) ON DELETE CASCADE)";
   con.query(sql, function (err, result) {
     if (err) throw err;
     console.log("Table scores created");
   });
 
   var sql =
-    "CREATE TABLE schedules (mean_score FLOAT, talent_id INT, course_id INT, FOREIGN KEY (talent_id) REFERENCES talents(talent_id) ON DELETE CASCADE, FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE)";
+    "CREATE TABLE schedules (mean_score FLOAT, talent_id INT, course_id INT, class_id INT, FOREIGN KEY (talent_id) REFERENCES talents(talent_id) ON DELETE CASCADE, FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE, FOREIGN KEY (class_id) REFERENCES classes(class_id) ON DELETE CASCADE)";
   con.query(sql, function (err, result) {
     if (err) throw err;
     console.log("Table schedules created");
+  });
+
+  var sql =
+    "CREATE TABLE talentClasses (score INT, talent_id INT, class_id INT, FOREIGN KEY (talent_id) REFERENCES talents(talent_id) ON DELETE CASCADE, FOREIGN KEY (class_id) REFERENCES classes(class_id) ON DELETE CASCADE)";
+  con.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log("Table talentClasses created");
   });
 
   return;
