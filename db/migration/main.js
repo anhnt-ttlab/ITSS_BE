@@ -73,7 +73,7 @@ con.connect(function (err) {
     "CREATE TABLE classesLessons (class_id INT, lesson_id INT, time VARCHAR(255), FOREIGN KEY (lesson_id) REFERENCES lessons(lesson_id) ON DELETE CASCADE, FOREIGN KEY (class_id) REFERENCES classes(class_id) ON DELETE CASCADE)";
   con.query(sql, function (err, result) {
     if (err) throw err;
-    console.log("Table talentClasses created");
+    console.log("Table classesLessons created");
   });
 
   return;

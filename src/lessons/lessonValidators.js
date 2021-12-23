@@ -10,7 +10,6 @@ let raiseErr = async (req) => {
 
   let createLessonValidator = async (req) => {
     req.check('lessonName', 'lesson name id is required.').not().isEmpty();
-    req.check('lessonTime', 'lesson time is required.').not().isEmpty();
     req.check('courseId', 'course id is required.').not().isEmpty();
     //check for errors
     return await raiseErr(req);
@@ -19,7 +18,6 @@ let raiseErr = async (req) => {
   let updateLessonValidator = async (req) => {
     req.check('lessonId', 'lesson id is required.').not().isEmpty();
     req.check('lessonName', 'lesson name is required.').not().isEmpty();
-    req.check('lessonTime', 'lesson time is required.').not().isEmpty();
     //check for errors
     return await raiseErr(req);
   }

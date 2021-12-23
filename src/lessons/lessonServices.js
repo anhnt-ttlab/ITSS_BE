@@ -2,8 +2,8 @@ import { query } from "../../server.js";
 
 async function createLesson (body) {
     try {
-      var sql = "INSERT INTO lessons (lesson_name, time, course_id) VALUES(?,?,?)";
-      var values = [body.lessonName, body.lessonTime, body.courseId];
+      var sql = "INSERT INTO lessons (lesson_name, course_id) VALUES(?,?)";
+      var values = [body.lessonName, body.courseId];
       var result = await query(sql, values);
       return result.insertId;
     } catch(error) {
@@ -14,9 +14,9 @@ async function createLesson (body) {
 }
 
 let findLessonByInfo = async (body) => {
-  var sql = "SELECT * FROM lessons where lesson_name = ? and time = ? and course_id = ?";
+  var sql = "SELECT * FROM lessons where lesson_name = ? and course_id = ?";
   try {
-    const rows = await query(sql, [body.lessonName, body.lessonTime, body.courseId]);
+    const rows = await query(sql, [body.lessonName, body.courseId]);
     return rows[0]
   } catch(err) {
     console.log(err)
@@ -60,8 +60,8 @@ let getListLessons = async () => {
 
   async function updateLesson (body) {
     try {
-    var sql = "UPDATE lessons SET lesson_name = ?, time = ? WHERE lesson_id = ?;";
-    var values = [body.lessonName, body.lessonTime, body.lessonId];
+    var sql = "UPDATE lessons SET lesson_name = ? WHERE lesson_id = ?;";
+    var values = [body.lessonName, body.lessonId];
     await query(sql, values);
     } catch(error) {
     console.log(error)
