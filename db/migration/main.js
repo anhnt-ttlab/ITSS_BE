@@ -76,5 +76,12 @@ con.connect(function (err) {
     console.log("Table classesLessons created");
   });
 
+  var updateClassesTable2312 =
+  "ALTER TABLE classes add column creator_id INT, ADD FOREIGN KEY (creator_id) REFERENCES managers(manager_id) ON DELETE CASCADE";
+  con.query(updateClassesTable2312, function (err, result) {
+  if (err) throw err;
+  console.log("Table classesLessons created");
+  });
+  
   return;
 });
