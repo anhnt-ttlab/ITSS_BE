@@ -49,7 +49,7 @@ async function createClassLesson (body) {
 }
 
 let findTalentumberByClassId = async (classId) => {
-  var sql = "SELECT COUNT(talent_id) AS talent_number FROM talentclasses where class_id = ?";
+  var sql = "SELECT COUNT(talent_id) AS talent_number FROM talentClasses where class_id = ?";
   try {
     const result = await query(sql, [classId]);
     return result
