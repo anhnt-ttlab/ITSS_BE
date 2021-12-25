@@ -88,9 +88,9 @@ classRouter.patch("/", async (req, res, next) => {
         })
     }
     var checkExistInfo = await findClassByInfo(req.body);
-    if (checkExistInfo) {
+    if (checkExistInfo && checkExistInfo.class_id != req.body.classId) {
         return res.send({
-            message: "Class has already existed",
+            message: "Info has already existed",
             statusCode: 409
         })
     }

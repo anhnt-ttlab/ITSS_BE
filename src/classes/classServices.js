@@ -24,6 +24,17 @@ let findClassByInfo = async (body) => {
   } finally {}
 }
 
+let findClassByCourseId = async (courseId) => {
+  var sql = "SELECT * FROM classes where course_id = ?";
+  try {
+    const rows = await query(sql, [courseId]);
+    return rows
+  } catch(err) {
+    console.log(err)
+    throw err
+  } finally {}
+}
+
 async function createClassLesson (body) {
     try {
       var sql = "INSERT INTO classesLessons (class_id, lesson_id, time) VALUES(?,?,?)";
@@ -119,6 +130,7 @@ export {
     updateClass,
     findClassByInfo,
     deleteClassById,
+    findClassByCourseId,
     findTalentumberByClassId,
     createClassLesson
 };

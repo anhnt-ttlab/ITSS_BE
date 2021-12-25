@@ -4,6 +4,8 @@ import {createLesson, getListLessonsByCourseId, findLessonById, updateLesson, de
 import {createLessonValidator, updateLessonValidator} from "./lessonValidators.js"
 import { findSchedulesByCourseId } from "../schedules/scheduleServices.js"
 import { createScore } from "../scores/scoreServices.js"
+import { findCourseById } from "../courses/courseServices.js"
+import { createClassLesson, findClassByCourseId } from "../classes/classServices.js"
 let lessonRouter = new express.Router();
 
 lessonRouter.post("/", async (req, res, next) => {
@@ -26,12 +28,28 @@ lessonRouter.post("/", async (req, res, next) => {
             statusCode: 409
         })
     }
+    var currentCourse = await findCourseById(req.body.courseId);
+    if (!currentCourse) {
+        return res.send({
+            message: "Course not found",
+            statusCode: 404
+        })
+    }
     let lessonCreated = await createLesson(req.body);
     if (lessonCreated) {
       let schedulesList = await findSchedulesByCourseId(req.body.courseId);
       var talentsId = await Promise.all(schedulesList.map(async (item) => {
         return item.talent_id
     }))
+    var classList = await findClassByCourseId(req.body.courseId)
+    await Promise.all(classList.map(async (item) => {
+      await createClassLesson({
+        time:item.start_date, 
+        classId:item.class_id,
+        lessonId: lessonCreated
+      })
+      return 0
+  }))
     await Promise.all(talentsId.map(async (item) => {
       await createScore({
         talentId:item, 
