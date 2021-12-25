@@ -5,7 +5,9 @@ import {createSchedule, deleteSchedule} from "./scheduleServices.js"
 import {findTalentById, findCourseById} from "../talents/talentServices.js"
 import {createScheduleValidator, deleteScheduleValidator} from "./scheduleValidators.js"
 import {getListLessonsByCourseId} from "../lessons/lessonServices.js"
+import { query } from "../../server.js";
 import {createScore} from "../scores/scoreServices.js"
+import {findClassById, createTalentClass, deleteTalentClassByInfo} from "../classes/classServices.js"
 let scheduleRouter = new express.Router();
 
 scheduleRouter.post("/", async (req, res, next) => {
@@ -42,13 +44,20 @@ scheduleRouter.post("/", async (req, res, next) => {
             statusCode: 404
         })
     }
+    var currentClass = await findClassById(req.body.classId);
+    if (!currentClass) {
+        return res.send({
+            message: "Class not found",
+            statusCode: 404
+        })
+    }
+    await createTalentClass(req.body)
     let scheduleCreated = await createSchedule(req.body);
     let scheduleInfo = await findScheduleByInfo(req.body);
     let lessonsList = await getListLessonsByCourseId(scheduleInfo.course_id)
     await Promise.all(lessonsList.map(async (item) => {
       await createScore({
-        talentId:scheduleInfo.talent_id, 
-        courseId:scheduleInfo.course_id,
+        talentId:scheduleInfo.talent_id,
         lessonId:item.lesson_id
       })
       return 0
@@ -111,6 +120,14 @@ scheduleRouter.delete("/", async (req, res, next) => {
     }
     let result = await deleteSchedule(req.query);
     if (result) {
+       await deleteTalentClassByInfo(checkExistSchedule)
+       let lessonsList = await getListLessonsByCourseId(req.query.courseId)
+       await Promise.all(lessonsList.map(async (item) => {
+        var deleteScoreSql = "DELETE FROM scores WHERE talent_id = ? and lesson_id = ?";
+        var deleteScoreValues = [req.query.talentId, item.lesson_id];
+        await query(deleteScoreSql, deleteScoreValues);
+         return 0
+       }))
         return res.send({
         message: "Delete schedule successfully.",
         statusCode: 200
@@ -139,9 +156,11 @@ scheduleRouter.get("/", async (req, res, next) => {
         var listResult = await getListSchedulesByTalentId(req.query.talentId);
         var result = await Promise.all(listResult.map(async (item) => {
             var course = await findCourseById(item.course_id);
+            var currentClass = await findClassById(item.class_id)
             return {
                 ...course,
-                mean_score: item.mean_score
+                ...currentClass,
+                mean_score: item.mean_score,
             }
         }))
         return res.send({

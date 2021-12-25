@@ -35,6 +35,18 @@ let findClassByCourseId = async (courseId) => {
   } finally {}
 }
 
+let findClassLessonByInfo = async (body) => {
+  var sql = "SELECT * FROM classesLessons where class_id = ? and lesson_id = ?";
+  try {
+    const rows = await query(sql, [body.classId,body.lessonId]);
+    return rows[0]
+  } catch(err) {
+    console.log(err)
+    throw err
+  } finally {}
+}
+
+
 async function createClassLesson (body) {
     try {
       var sql = "INSERT INTO classesLessons (class_id, lesson_id, time) VALUES(?,?,?)";
@@ -46,6 +58,19 @@ async function createClassLesson (body) {
       return false;
     }
     finally {}
+}
+
+async function createTalentClass (body) {
+  try {
+    var sql = "INSERT INTO talentClasses (class_id, talent_id) VALUES(?,?)";
+    var values = [body.classId, body.talentId];
+    var result = await query(sql, values);
+    return result.insertId;
+  } catch(error) {
+    console.log(error)
+    return false;
+  }
+  finally {}
 }
 
 let findTalentumberByClassId = async (classId) => {
@@ -123,6 +148,24 @@ let getListClasses = async () => {
     }
   }
 
+  async function deleteTalentClassByInfo (body) {
+    let classe = await findClassById(body.class_id);
+    if (classe) {
+      try {
+        var sql = "DELETE FROM talentClasses WHERE class_id = ? and talent_id = ?";
+        var values = [body.class_id, body.talent_id];
+        await query(sql, values);
+      } catch(error) {
+        console.log(error)
+        throw error
+      }
+      finally {}
+      return 0;
+    } else {
+      return false;
+    }
+  }
+
 export {
     createClass,
     getListClasses,
@@ -130,7 +173,10 @@ export {
     updateClass,
     findClassByInfo,
     deleteClassById,
+    findClassLessonByInfo,
+    createTalentClass,
     findClassByCourseId,
     findTalentumberByClassId,
+    deleteTalentClassByInfo,
     createClassLesson
 };

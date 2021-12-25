@@ -13,9 +13,9 @@ let getListSchedules = async (body) => {
 
 
   let findScheduleByInfo = async (body) => {
-    var sql = "SELECT * FROM schedules where talent_id = ? and course_id = ?";
+    var sql = "SELECT * FROM schedules where talent_id = ? and course_id = ? and class_id = ?";
     try {
-      const rows = await query(sql, [body.talentId, body.courseId]);
+      const rows = await query(sql, [body.talentId, body.courseId, body.classId]);
       return rows[0]
     } catch(err) {
       console.log(err)
@@ -48,8 +48,8 @@ let getListSchedules = async (body) => {
 
 async function createSchedule (body) {
     try {
-      var sql = "INSERT INTO schedules (talent_id, course_id, mean_score) VALUES(?,?,0.0)";
-      var values = [body.talentId, body.courseId];
+      var sql = "INSERT INTO schedules (talent_id, course_id, mean_score, class_id) VALUES(?,?,0.0,?)";
+      var values = [body.talentId, body.courseId, body.classId];
       var result = await query(sql, values);
       return result;
     } catch(error) {
@@ -61,12 +61,9 @@ async function createSchedule (body) {
 
 async function deleteSchedule (body) {
   try {
-    var sql = "DELETE FROM schedules WHERE talent_id = ? and course_id = ?";
-    var values = [body.talentId, body.courseId];
+    var sql = "DELETE FROM schedules WHERE talent_id = ? and course_id = ? and class_id";
+    var values = [body.talentId, body.courseId, body.classId];
     await query(sql, values);
-    var deleteScoreSql = "DELETE FROM scores WHERE talent_id = ? and course_id = ?";
-    var deleteScoreValues = [body.talentId, body.courseId];
-    await query(deleteScoreSql, deleteScoreValues);
     return true;
   } catch(error) {
     console.log(error)

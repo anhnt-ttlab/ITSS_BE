@@ -36,6 +36,18 @@ let getListLessonsByCourseId = async (courseId) => {
   } finally {}
 }
 
+let getListLessonsByClassId = async (classId) => {
+  try {
+      var sql = "SELECT * FROM classLessons where class_id = ?";
+      var values = [classId]
+      const rows = await query(sql, values);
+      return rows
+  } catch(err) {
+      console.log(err)
+      throw err
+  } finally {}
+}
+
 let getListLessons = async () => {
     try {
         var sql = "SELECT * FROM lessons";
@@ -95,6 +107,7 @@ export {
     findLessonById,
     updateLesson,
     findLessonByInfo,
+    getListLessonsByClassId,
     deleteLessonById,
     getListLessonsByCourseId
 };

@@ -1,10 +1,11 @@
 import express from "express"
 import { isLogging } from "../managers/managerServices.js"
 import {updateScore, findScoreByInfo} from "./scoreServices.js"
-import {getListScoresByInfo} from "./scoreServices.js"
+import {getListScoresByTalentId} from "./scoreServices.js"
 import {findTalentById, findCourseById} from "../talents/talentServices.js"
 import {updateScoreValidator} from "./scoreValidators.js"
 import {findLessonById} from "../lessons/lessonServices.js"
+import {findClassById, findClassLessonByInfo} from "../classes/classServices.js"
 let scoreRouter = new express.Router();
 
 scoreRouter.patch("/", async (req, res, next) => {
@@ -92,23 +93,16 @@ scoreRouter.get("/", async (req, res, next) => {
                 statusCode: 404
             })
         }
-        var currentCourse = await findCourseById(req.query.courseId);
-        if (!currentCourse) {
-            return res.send({
-                message: "Course not found",
-                statusCode: 404
-            })
-        }
-        var listResult = await getListScoresByInfo(req.query);
+        var listResult = await getListScoresByTalentId(req.query.talentId);
         var result = await Promise.all(listResult.map(async (item) => {
-            var course = await findCourseById(item.course_id);
+            var currentClass = await findClassLessonByInfo({classId: req.query.classId, lessonId: item.lesson_id});
             var talent = await findTalentById(item.talent_id);
             var lesson = await findLessonById(item.lesson_id);
             var resultItem = {
-                ...course,
+                ...currentClass,
                 ...talent,
                 ...lesson,
-                time: lesson.time,
+                time: currentClass.time,
                 score: item.score
             }
             delete resultItem.avatar;

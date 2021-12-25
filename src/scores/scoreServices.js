@@ -1,8 +1,8 @@
 import { query } from "../../server.js";
 
 let getListScoresByInfo = async (body) => {
-    var sql = "SELECT * FROM scores where talent_id = ? AND course_id = ?";
-    var values = [body.talentId, body.courseId]
+    var sql = "SELECT * FROM scores where talent_id = ?";
+    var values = [body.talentId]
     try {
       const rows = await query(sql, values);
       return rows
@@ -39,8 +39,8 @@ let getListScoresByInfo = async (body) => {
 
 async function createScore (body) {
     try {
-      var sql = "INSERT INTO scores (talent_id, course_id, lesson_id, score) VALUES(?,?,?,0.0)";
-      var values = [body.talentId, body.courseId, body.lessonId];
+      var sql = "INSERT INTO scores (talent_id, lesson_id, score) VALUES(?,?,0.0)";
+      var values = [body.talentId, body.lessonId];
       await query(sql, values);
       return true;
     } catch(error) {
