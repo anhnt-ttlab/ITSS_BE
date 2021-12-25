@@ -115,7 +115,7 @@ classRouter.patch("/", async (req, res, next) => {
       var talentNumber = await findTalentumberByClassId(finalResult.class_id)
         return res.send({
         message: "Update class successfully.",
-        newClass: {
+        updatedClass: {
           ...finalResult,
           course_name: currentCourse.course_name,
           creator_name: manager.full_name,
