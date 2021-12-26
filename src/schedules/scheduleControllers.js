@@ -63,6 +63,7 @@ scheduleRouter.post("/", async (req, res, next) => {
       return 0
     }))
     let result = {
+        ...currentClass,
         ...currentCourse,
         mean_score: 0.0
     }
