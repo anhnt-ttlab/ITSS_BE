@@ -1,7 +1,7 @@
 import express from "express"
 import { isLogging } from "../managers/managerServices.js"
 import {updateScore, findScoreByInfo} from "./scoreServices.js"
-import {getListScoresByTalentId} from "./scoreServices.js"
+import {getListScoresByInfo} from "./scoreServices.js"
 import {findTalentById, findCourseById} from "../talents/talentServices.js"
 import {updateScoreValidator} from "./scoreValidators.js"
 import {findLessonById} from "../lessons/lessonServices.js"
@@ -93,7 +93,7 @@ scoreRouter.get("/", async (req, res, next) => {
                 statusCode: 404
             })
         }
-        var listResult = await getListScoresByTalentId(req.query.talentId);
+        var listResult = await getListScoresByInfo(req.query);
         var result = await Promise.all(listResult.map(async (item) => {
             var currentClass = await findClassLessonByInfo({classId: req.query.classId, lessonId: item.lesson_id});
             var talent = await findTalentById(item.talent_id);
