@@ -50,14 +50,6 @@ lessonRouter.post("/", async (req, res, next) => {
       })
       return 0
   }))
-    await Promise.all(talentsId.map(async (item) => {
-      await createScore({
-        talentId:item, 
-        courseId:req.body.courseId,
-        lessonId:lessonCreated
-      })
-      return 0
-    }))
       var finalResult = await findLessonById(lessonCreated);
         return res.send({
         message: "Create lesson successfully.",

@@ -82,6 +82,14 @@ con.connect(function (err) {
   if (err) throw err;
   console.log("Table classesLessons created");
   });
+
+  var updateScoresTable2612 =
+  "ALTER TABLE itss.scores add column class_id INT, ADD FOREIGN KEY (class_id) REFERENCES itss.classes(class_id) ON DELETE CASCADE;";
+  con.query(updateScoresTable2612, function (err, result) {
+  if (err) throw err;
+  console.log("Table classesLessons created");
+  });
+  
   
   return;
 });

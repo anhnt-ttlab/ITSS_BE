@@ -39,8 +39,8 @@ let getListScoresByInfo = async (body) => {
 
 async function createScore (body) {
     try {
-      var sql = "INSERT INTO scores (talent_id, lesson_id, score) VALUES(?,?,0.0)";
-      var values = [body.talentId, body.lessonId];
+      var sql = "INSERT INTO scores (talent_id, lesson_id, class_id, score) VALUES(?,?,?,0.0)";
+      var values = [body.talentId, body.lessonId, body.classId];
       await query(sql, values);
       return true;
     } catch(error) {

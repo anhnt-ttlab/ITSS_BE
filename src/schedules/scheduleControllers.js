@@ -58,7 +58,8 @@ scheduleRouter.post("/", async (req, res, next) => {
     await Promise.all(lessonsList.map(async (item) => {
       await createScore({
         talentId:scheduleInfo.talent_id,
-        lessonId:item.lesson_id
+        lessonId:item.lesson_id,
+        classId: req.body.classId
       })
       return 0
     }))
