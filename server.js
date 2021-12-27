@@ -12,6 +12,7 @@ import { scheduleRouter } from "./src/schedules/scheduleControllers.js"
 import { courseRouter } from "./src/courses/courseControllers.js"
 import { lessonRouter } from "./src/lessons/lessonControllers.js"
 import { scoreRouter } from "./src/scores/scoreControllers.js"
+import { classLessonRouter } from "./src/class-lessons/classLessonControllers.js"
 import { classRouter } from "./src/classes/classControllers.js"
 dotenv.config()
 
@@ -59,6 +60,7 @@ app.use("/schedule", scheduleRouter);
 app.use("/lesson", lessonRouter);
 app.use("/score", scoreRouter);
 app.use("/class", classRouter);
+app.use("/class-lesson", classLessonRouter);
 app.get('/public/home.html', function (req, res) {
   var sql = "SELECT * FROM talents";
   con.query(sql, function(err, results) {
