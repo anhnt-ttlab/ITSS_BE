@@ -120,8 +120,10 @@ lessonRouter.get("/", async (req, res, next) => {
         var listResult = await getListLessonsByCourseId(req.query.courseId);
         var result = await Promise.all(listResult.map(async (item) => {
             var lesson = await findLessonById(item.lesson_id);
+            var currentCourse = await findCourseById(item.course_id);
             return {
-                ...lesson
+                ...lesson,
+                ...currentCourse
             }
         }))
           // var listResult = await getListLessons();

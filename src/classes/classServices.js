@@ -65,7 +65,7 @@ async function createTalentClass (body) {
     var sql = "INSERT INTO talentClasses (class_id, talent_id) VALUES(?,?)";
     var values = [body.classId, body.talentId];
     var result = await query(sql, values);
-    return result.insertId;
+    return result;
   } catch(error) {
     console.log(error)
     return false;

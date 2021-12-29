@@ -12,6 +12,17 @@ let findTalentsByEmail = async (body) => {
   } finally {}
 }
 
+let findTalentsByManagerId = async (id) => {
+  var sql = "SELECT * FROM talents where manager_id = ?";
+  try {
+    const rows = await query(sql, [id]);
+    return rows
+  } catch(err) {
+    console.log(err)
+    throw err
+  } finally {}
+}
+
 let findTalentById = async (id) => {
   var sql = "SELECT * FROM talents where talent_id = ?";
   try {
@@ -107,6 +118,7 @@ export {
     getListTalents,
     deleteTalentById,
     updateTalent,
+    findTalentsByManagerId,
     findTalentById,
     findCourseById
 };
