@@ -78,10 +78,7 @@ let bulkCreateTalentClass = async (body) => {
   try {
     var sql = "INSERT INTO talentClasses (class_id, talent_id) VALUES (?)";
     var values = await Promise.all(body.talentIds.map(async (item) => {
-      return {
-        class_id: body.classId,
-        talent_id: item
-      }
+      return [body.classId, item]
     }))
     // var values = [body.classId, body.talentId];
     var result = await query(sql, values);
