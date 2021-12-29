@@ -1,3 +1,4 @@
+import req from "express/lib/request.js";
 import { query } from "../../server.js";
 
 async function createClass (body) {
@@ -72,6 +73,26 @@ async function createTalentClass (body) {
   }
   finally {}
 }
+
+let bulkCreateTalentClass = async (body) => {
+  try {
+    var sql = "INSERT INTO talentClasses (class_id, talent_id) VALUES (?)";
+    var values = await Promise.all(body.talentIds.map(async (item) => {
+      return {
+        class_id: body.classId,
+        talent_id: item
+      }
+    }))
+    // var values = [body.classId, body.talentId];
+    var result = await query(sql, values);
+    return result;
+  } catch(error) {
+    console.log(error)
+    return false;
+  }
+  finally {}
+}
+
 
 let findTalentumberByClassId = async (classId) => {
   var sql = "SELECT COUNT(talent_id) AS talent_number FROM talentClasses where class_id = ?";
@@ -176,6 +197,7 @@ export {
     findClassLessonByInfo,
     createTalentClass,
     findClassByCourseId,
+    bulkCreateTalentClass,
     findTalentumberByClassId,
     deleteTalentClassByInfo,
     createClassLesson

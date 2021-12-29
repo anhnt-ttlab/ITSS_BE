@@ -10,7 +10,7 @@ let raiseErr = async (req) => {
 
   let createTalentClassValidator = async (req) => {
     req.check('classId', 'class id is required.').not().isEmpty();  
-    req.check('talentId', 'talent email is required.').not().isEmpty();
+    req.check('talentIds', 'talent ids is required.').not().isEmpty();
     //check for errors
     return await raiseErr(req);
   }

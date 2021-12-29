@@ -1,8 +1,8 @@
 import express from "express"
-import { createTalentClass, findClassById } from "../classes/classServices.js";
+import { bulkCreateTalentClass, findClassById } from "../classes/classServices.js";
 import { isLogging } from "../managers/managerServices.js"
-import { findTalentById, findTalentsByManagerId } from "../talents/talentServices.js";
-import { findTalentClassByInfo, findTalentClassesByClassId } from "./talentClassServices.js";
+import { findTalentById, findTalentByIds, findTalentsByManagerId } from "../talents/talentServices.js";
+import { findTalentClassesByClassId } from "./talentClassServices.js";
 import { createTalentClassValidator } from "./talentClassValidators.js";
 let talentClassRouter = new express.Router();
 
@@ -57,22 +57,12 @@ talentClassRouter.get("/", async (req, res, next) => {
           statusCode: 401
       });
       }
-      var checkExistTalentClass = await findTalentClassByInfo(req.body);
-      if (checkExistTalentClass) {
-          return res.send({
-              message: "Talent Class has already existed",
-              statusCode: 409
-          })
-      }
-      let talentClassCreated = await createTalentClass(req.body);
+      let talentClassCreated = await bulkCreateTalentClass(req.body);
       if (talentClassCreated) {
-        var currentTalent = await findTalentById(req.body.talentId)
+        var currentTalent = await findTalentByIds(req.body.talentIds)
           return res.send({
           message: "Create talent class successfully.",
-          newClass: {
-            class_id: req.body.classId,
-            ...currentTalent
-          },
+          talentInClass: currentTalent,
           statusCode: 200
           });
       } else {

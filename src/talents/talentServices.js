@@ -34,6 +34,17 @@ let findTalentById = async (id) => {
   } finally {}
 }
 
+let findTalentByIds = async (ids) => {
+  var sql = "SELECT * FROM talents where talent_id IN (?)";
+  try {
+    const rows = await query(sql, [ids]);
+    return rows
+  } catch(err) {
+    console.log(err)
+    throw err
+  } finally {}
+}
+
 let findCourseById = async (id) => {
   var sql = "SELECT * FROM courses where course_id = ?";
   try {
@@ -118,6 +129,7 @@ export {
     getListTalents,
     deleteTalentById,
     updateTalent,
+    findTalentByIds,
     findTalentsByManagerId,
     findTalentById,
     findCourseById
