@@ -76,13 +76,12 @@ async function createTalentClass (body) {
 
 let bulkCreateTalentClass = async (body) => {
   try {
-    var sql = "INSERT INTO talentClasses (class_id, talent_id) VALUES (?)";
-    var values = await Promise.all(body.talentIds.map(async (item) => {
-      return [body.classId, item]
+    var finalResult = await Promise.all(body.talentIds.map(async (item) => {
+      var sql = "INSERT INTO talentClasses (class_id, talent_id) VALUES (?,?)";
+      await query(sql, [body.classId, item]);
+      return 0
     }))
-    // var values = [body.classId, body.talentId];
-    var result = await query(sql, values);
-    return result;
+    return finalResult;
   } catch(error) {
     console.log(error)
     return false;
