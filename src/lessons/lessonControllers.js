@@ -3,7 +3,6 @@ import { isLogging } from "../managers/managerServices.js"
 import {createLesson, getListLessonsByCourseId, findLessonById, updateLesson, deleteLessonById, findLessonByInfo} from "./lessonServices.js"
 import {createLessonValidator, updateLessonValidator} from "./lessonValidators.js"
 import { findSchedulesByCourseId } from "../schedules/scheduleServices.js"
-import { createScore } from "../scores/scoreServices.js"
 import { findCourseById } from "../courses/courseServices.js"
 import { createClassLesson, findClassByCourseId } from "../classes/classServices.js"
 let lessonRouter = new express.Router();
