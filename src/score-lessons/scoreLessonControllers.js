@@ -2,8 +2,10 @@ import express from "express"
 import { findClassById } from "../classes/classServices.js";
 import { findLessonById } from "../lessons/lessonServices.js";
 import { isLogging } from "../managers/managerServices.js"
+import { findScoreByInfo, updateScore } from "../scores/scoreServices.js";
 import { findTalentById } from "../talents/talentServices.js";
 import { findScoresByClassLesson } from "./scoreLessonServices.js";
+import { updateScoreLessonValidator } from "./scoreLessonValidators.js"
 let scoreLessonRouter = new express.Router();
 
 scoreLessonRouter.get("/", async (req, res, next) => {
@@ -36,7 +38,7 @@ scoreLessonRouter.get("/", async (req, res, next) => {
         }))
           return res.send({
               message: "Get list score lessons successfully.",
-              classDetail: listResultWithFullInfo,
+              scoresInLesson: listResultWithFullInfo,
               statusCode: 200
           });
       }
@@ -46,49 +48,50 @@ scoreLessonRouter.get("/", async (req, res, next) => {
     }
   });
 
-//   scoreLessonRouter.patch("/", async (req, res, next) => {
-//     try {
-//       let validator = await updateClassLessonValidator(req);
-//       if (validator !== null) {
-//         return res.send({message: validator});
-//       }
-//       let isLogged = await isLogging(req);
-//       if (isLogged === false) {
-//       return res.send({
-//           message: "You haven't logged in.",
-//           statusCode: 401
-//       });
-//       }
-//       var checkExistClassLesson = await findClassLessonByInfo(req.body);
-//       if (!checkExistClassLesson) {
-//           return res.send({
-//               message: "Class lesson does not existed",
-//               statusCode: 409
-//           })
-//       }
-//       let classLessonUpdated = await updateClassLesson(req.body);
-//       if (classLessonUpdated) {
-//         var currentLesson = await findLessonById(req.body.lessonId)
-//         var currentClassLesson = await findClassLessonByInfo(req.body);
-//         return res.send({
-//             updatedClassLesson: {
-//                 ...currentLesson,
-//                 ...currentClassLesson
-//             },
-//             message: "Update class lesson success.",
-//             statusCode: 200
-//             });
-//       } else {
-//           return res.send({
-//           message: "Update class lesson failed.",
-//           statusCode: 422
-//           });
-//       }
-//     } catch (error) {
-//       console.log(error)
-//       return res.status(500).send({error: "Server Error"});
-//     }
-//   });
+  scoreLessonRouter.patch("/", async (req, res, next) => {
+    try {
+      let validator = await updateScoreLessonValidator(req);
+      if (validator !== null) {
+        return res.send({message: validator});
+      }
+      let isLogged = await isLogging(req);
+      if (isLogged === false) {
+      return res.send({
+          message: "You haven't logged in.",
+          statusCode: 401
+      });
+      }
+      var listResult = await Promise.all(req.body.talentScores.map(async (item) => {
+        await updateScore({
+          score: item.score,
+          talentId: item.talent_id,
+          classId: req.body.classId,
+          lessonId: req.body.lessonId
+        })
+        var currentItem = await findScoreByInfo({
+          talentId: item.talent_id,
+          classId: req.body.classId,
+          lessonId: req.body.lessonId
+        })
+        var currentTalent = await findTalentById(currentItem.talent_id);
+        var currentLesson = await findLessonById(currentItem.lesson_id);
+        var resultItem = {
+          ...currentItem,
+          ...currentTalent,
+          ...currentLesson
+        }
+        return resultItem
+      }))
+        return res.send({
+          updatedScores: listResult,
+            message: "Update success.",
+            statusCode: 200
+            });
+    } catch (error) {
+      console.log(error)
+      return res.status(500).send({error: "Server Error"});
+    }
+  });
 
   export {
     scoreLessonRouter

@@ -117,18 +117,18 @@ lessonRouter.get("/", async (req, res, next) => {
         });
       } else {
         var listResult = await getListLessonsByCourseId(req.query.courseId);
+        var currentCourse = await findCourseById(req.query.courseId);
         var result = await Promise.all(listResult.map(async (item) => {
             var lesson = await findLessonById(item.lesson_id);
-            var currentCourse = await findCourseById(item.course_id);
             return {
-                ...lesson,
-                ...currentCourse
+                ...lesson
             }
         }))
           // var listResult = await getListLessons();
           return res.send({
               message: "Get list lessons successfully.",
               lessons: result,
+              course_name: currentCourse.course_name,
               statusCode: 200
           });
       }

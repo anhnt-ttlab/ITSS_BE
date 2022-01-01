@@ -65,12 +65,11 @@ async function deleteScore (body) {
 
 async function updateScore (body) {
     try {
-      var sql = "UPDATE scores SET score = ? WHERE talent_id = ? and lesson_id = ?;";
-      var values = [body.score, body.talentId, body.lessonId];
+      var sql = "UPDATE scores SET score = ? WHERE talent_id = ? and lesson_id = ? and class_id = ?;";
+      var values = [body.score, body.talentId, body.lessonId, body.classId];
       await query(sql, values);
-      var result = await findScoreByInfo(body)
-      var findScoreSql = "SELECT * FROM scores WHERE talent_id = ? and course_id = ?;";
-      var valuesFindScore = [result.talent_id, result.course_id];
+      var findScoreSql = "SELECT * FROM scores WHERE talent_id = ? and class_id = ?;";
+      var valuesFindScore = [body.talentId, body.classId];
       var mean_score = 0.0;
       var scoreList = await query(findScoreSql, valuesFindScore);
       if (scoreList.length) {
@@ -79,8 +78,8 @@ async function updateScore (body) {
           return 0
         }))
         mean_score = mean_score/scoreList.length
-        var updateMeanScoreSql = "UPDATE schedules SET mean_score = ? WHERE talent_id = ? and course_id = ?;";
-        var valuesUpdateMeanScoreSql = [mean_score, result.talent_id, result.course_id];
+        var updateMeanScoreSql = "UPDATE schedules SET mean_score = ? WHERE talent_id = ? and class_id = ?;";
+        var valuesUpdateMeanScoreSql = [mean_score, body.talentId, body.classId];
         await query(updateMeanScoreSql, valuesUpdateMeanScoreSql);
       }
     } catch(error) {
@@ -88,7 +87,7 @@ async function updateScore (body) {
       throw error
     }
     finally {}
-    return result;
+    return 0;
 }
 
 async function deleteScoreById (id) {

@@ -38,7 +38,7 @@ let getListLessonsByCourseId = async (courseId) => {
 
 let getListLessonsByClassId = async (classId) => {
   try {
-      var sql = "SELECT * FROM classLessons where class_id = ?";
+      var sql = "SELECT * FROM classesLessons where class_id = ?";
       var values = [classId]
       const rows = await query(sql, values);
       return rows
