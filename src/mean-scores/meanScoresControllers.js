@@ -34,7 +34,7 @@ meanScoreRouter.get("/", async (req, res, next) => {
             var meanScore = await calMeanScore(item.course_id)
             allTalentScores.push({
                 ...item,
-                meanScore
+                mean_score: Math.round(meanScore * 100) / 100
             })
         }))
         return res.send({
