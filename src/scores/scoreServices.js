@@ -90,6 +90,28 @@ async function updateScore (body) {
     return 0;
 }
 
+async function calMeanScore (courseId) {
+  try {
+    var findScoreSql = "SELECT * FROM schedules WHERE course_id = ?";
+    var valuesFindScore = [courseId];
+    var mean_score = 0.0;
+    var scoreList = await query(findScoreSql, valuesFindScore);
+    if (scoreList.length) {
+      await Promise.all(scoreList.map(async (item) => {
+        mean_score = mean_score + item.mean_score
+        return 0
+      }))
+      mean_score = mean_score/scoreList.length
+      return mean_score;
+    }
+  } catch(error) {
+    console.log(error)
+    throw error
+  }
+  finally {}
+  return 0;
+}
+
 async function deleteScoreById (id) {
   let score = await findScoreById(id);
   if (score) {
@@ -114,6 +136,7 @@ export {
     deleteScore,
     findScoreByInfo,
     deleteScoreById,
+    calMeanScore,
     updateScore,
     getListScoresByTalentId
 };

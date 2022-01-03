@@ -16,6 +16,7 @@ import { classLessonRouter } from "./src/class-lessons/classLessonControllers.js
 import { classRouter } from "./src/classes/classControllers.js"
 import { talentClassRouter } from "./src/talent-classes/talentClassControllers.js"
 import { scoreLessonRouter } from "./src/score-lessons/scoreLessonControllers.js"
+import { meanScoreRouter } from "./src/mean-scores/meanScoresControllers.js"
 dotenv.config()
 
 var app = express();
@@ -65,6 +66,7 @@ app.use("/class", classRouter);
 app.use("/class-lesson", classLessonRouter);
 app.use("/class-talent", talentClassRouter);
 app.use("/score-lesson", scoreLessonRouter);
+app.use("/mean-score", meanScoreRouter);
 app.get('/public/home.html', function (req, res) {
   var sql = "SELECT * FROM talents";
   con.query(sql, function(err, results) {

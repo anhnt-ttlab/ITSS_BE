@@ -11,6 +11,17 @@ let findTalentClassesByClassId = async (classId) => {
   } finally {}
 }
 
+let findTalentClassesByTalentId = async (talentId) => {
+  var sql = "SELECT * FROM talentClasses where talent_id = ?";
+  try {
+    const rows = await query(sql, [talentId]);
+    return rows
+  } catch(err) {
+    console.log(err)
+    throw err
+  } finally {}
+}
+
 let findTalentClassByInfo = async (body) => {
     var sql = "SELECT * FROM talentClasses where class_id = ? and talent_id = ?";
     try {
@@ -39,5 +50,6 @@ let findTalentClassByInfo = async (body) => {
 export {
     findTalentClassesByClassId,
     findTalentClassByInfo,
+    findTalentClassesByTalentId
     // findClassLessonByInfo
 };
