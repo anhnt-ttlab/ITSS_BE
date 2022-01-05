@@ -59,7 +59,7 @@ let getListCourses = async () => {
 
   let getListCoursesWithOtherInfo = async () => {
     try {
-        var sql = "SELECT (SELECT COUNT(class_id) AS class_number FROM classes where classes.course_id = courses.course_id) as class_number, COUNT(lesson_id) AS lesson_number, courses.*, managers.full_name as creator_name FROM courses INNER JOIN managers ON managers.manager_id = courses.creator_id INNER JOIN lessons ON lessons.course_id = courses.course_id GROUP BY lessons.lesson_id";
+        var sql = "SELECT (SELECT COUNT(class_id) AS class_number FROM classes where classes.course_id = courses.course_id) as class_number, COUNT(lesson_id) AS lesson_number, courses.*, managers.full_name as creator_name FROM courses INNER JOIN managers ON managers.manager_id = courses.creator_id INNER JOIN lessons ON lessons.course_id = courses.course_id GROUP BY courses.course_id";
         const rows = await query(sql);
         return rows
     } catch(err) {
