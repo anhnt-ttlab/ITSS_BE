@@ -1,6 +1,6 @@
 import express from "express"
 import { findManagerById, isLogging } from "../managers/managerServices.js"
-import {createClass, getListClasses, findClassById, deleteClassById, updateClass, findClassByInfo, createClassLesson, findTalentumberByClassId} from "./classServices.js"
+import {createClass, getListClasses, findClassById, deleteClassById, updateClass, findClassByInfo, createClassLesson, findTalentumberByClassId, getListClassesWithOtherInfo} from "./classServices.js"
 import { getListLessonsByCourseId } from "../lessons/lessonServices.js"
 import {createClassValidator, updateClassValidator} from "./classValidators.js"
 import { findCourseById } from "../courses/courseServices.js"
@@ -144,21 +144,10 @@ classRouter.get("/", async (req, res, next) => {
           statusCode: 401
         });
       } else {
-          var listResult = await getListClasses();
-          var listResultWithFullInfo = await Promise.all(listResult.map(async (item) => {
-            var currentCourse = await findCourseById(item.course_id)
-            var manager = await findManagerById(item.creator_id)
-            var talentNumber = await findTalentumberByClassId(item.class_id)
-            return {
-              ...item,
-              course_name: currentCourse.course_name,
-              creator_name: manager.full_name,
-              talent_number: talentNumber[0].talent_number
-            }
-        }))
+          var listResultWithOtherInfo = await getListClassesWithOtherInfo();
           return res.send({
               message: "Get list classes successfully.",
-              classes: listResultWithFullInfo,
+              classes: listResultWithOtherInfo,
               statusCode: 200
           });
       }

@@ -1,8 +1,8 @@
 import { query } from "../../server.js";
 
 let getListScoresByInfo = async (body) => {
-    var sql = "SELECT * FROM scores where talent_id = ? and class_id = ?";
-    var values = [body.talentId, body.classId]
+    var sql = "SELECT scores.*, talents.*, lessons.*, classesLessons.time FROM scores INNER JOIN talents ON scores.talent_id = talents.talent_id INNER JOIN lessons ON lessons.lesson_id = scores.lesson_id INNER JOIN classesLessons ON classesLessons.class_id = ? and classesLessons.lesson_id = scores.lesson_id where scores.talent_id = ? and scores.class_id = ?";
+    var values = [body.classId, body.talentId, body.classId]
     try {
       const rows = await query(sql, values);
       return rows

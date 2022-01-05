@@ -1,6 +1,6 @@
 import express from "express"
 import { isLogging } from "../managers/managerServices.js"
-import {getListSchedulesByTalentId, findScheduleByInfo, findSchedulesByCourseId} from "./scheduleServices.js"
+import {getListSchedulesByTalentId, findScheduleByInfo, findSchedulesByCourseId, getListSchedulesByTalentIdWithOtherInfo} from "./scheduleServices.js"
 import {createSchedule, deleteSchedule} from "./scheduleServices.js"
 import {findTalentById, findCourseById} from "../talents/talentServices.js"
 import {createScheduleValidator, deleteScheduleValidator} from "./scheduleValidators.js"
@@ -155,19 +155,10 @@ scheduleRouter.get("/", async (req, res, next) => {
         statusCode: 401
       });
     } else {
-        var listResult = await getListSchedulesByTalentId(req.query.talentId);
-        var result = await Promise.all(listResult.map(async (item) => {
-            var course = await findCourseById(item.course_id);
-            var currentClass = await findClassById(item.class_id)
-            return {
-                ...course,
-                ...currentClass,
-                mean_score: item.mean_score,
-            }
-        }))
+        var listResult = await getListSchedulesByTalentIdWithOtherInfo(req.query.talentId);
         return res.send({
             message: "Get list schedules successfully.",
-            schedules: result,
+            schedules: listResult,
             statusCode: 200
         });
     }

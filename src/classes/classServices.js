@@ -127,6 +127,17 @@ let getListClasses = async () => {
     } finally {}
   }
 
+  let getListClassesWithOtherInfo = async () => {
+    try {
+        var sql = "SELECT (SELECT COUNT(talent_id) AS talent_number FROM talentClasses where talentClasses.class_id = classes.class_id) as talent_number, classes.* , managers.full_name as creator_name, courses.course_name as course_name from classes INNER JOIN courses On classes.course_id = courses.course_id INNER JOIN managers On classes.creator_id = managers.manager_id";
+        const rows = await query(sql);
+        return rows
+    } catch(err) {
+        console.log(err)
+        throw err
+    } finally {}
+  }
+
   let findClassById = async (id) => {
     var sql = "SELECT * FROM classes where class_id = ?";
     try {
@@ -199,6 +210,7 @@ export {
     findClassByCourseId,
     bulkCreateTalentClass,
     findTalentumberByClassId,
+    getListClassesWithOtherInfo,
     deleteTalentClassByInfo,
     createClassLesson
 };

@@ -1,6 +1,6 @@
 import express from "express"
 import { findManagerById, isLogging } from "../managers/managerServices.js"
-import {createCourse, getListCourses, findCourseById, deleteCourseById, updateCourse, findCourseByInfo, findLessonNumberByCourseId, findClassNumberByCourseId} from "./courseServices.js"
+import {createCourse, getListCourses, findCourseById, deleteCourseById, updateCourse, findCourseByInfo, findLessonNumberByCourseId, findClassNumberByCourseId, getListCoursesWithOtherInfo} from "./courseServices.js"
 import {createCourseValidator, updateCourseValidator} from "./courseValidators.js"
 let courseRouter = new express.Router();
 
@@ -110,21 +110,10 @@ courseRouter.get("/", async (req, res, next) => {
           statusCode: 401
         });
       } else {
-          var listResult = await getListCourses();
-          var listResultWithFullInfo = await Promise.all(listResult.map(async (item) => {
-            var lessonNumber = await findLessonNumberByCourseId(item.course_id)
-            var classNumber = await findClassNumberByCourseId(item.course_id)
-            var manager = await findManagerById(item.creator_id)
-            return {
-              ...item,
-              lesson_number: lessonNumber[0].lesson_number,
-              class_number: classNumber[0].class_number,
-              creator_name: manager.full_name
-            }
-        }))
+          var listResult = await getListCoursesWithOtherInfo();
           return res.send({
               message: "Get list courses successfully.",
-              courses: listResultWithFullInfo,
+              courses: listResult,
               statusCode: 200
           });
       }

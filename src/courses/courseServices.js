@@ -57,6 +57,17 @@ let getListCourses = async () => {
     } finally {}
   }
 
+  let getListCoursesWithOtherInfo = async () => {
+    try {
+        var sql = "SELECT (SELECT COUNT(class_id) AS class_number FROM classes where classes.course_id = courses.course_id) as class_number, COUNT(lesson_id) AS lesson_number, courses.*, managers.full_name as creator_name FROM courses INNER JOIN managers ON managers.manager_id = courses.creator_id INNER JOIN lessons ON lessons.course_id = courses.course_id";
+        const rows = await query(sql);
+        return rows
+    } catch(err) {
+        console.log(err)
+        throw err
+    } finally {}
+  }
+
   let findCourseById = async (id) => {
     var sql = "SELECT * FROM courses where course_id = ?";
     try {
@@ -105,6 +116,7 @@ export {
     findCourseById,
     updateCourse,
     findCourseByInfo,
+    getListCoursesWithOtherInfo,
     deleteCourseById,
     findLessonNumberByCourseId,
     findClassNumberByCourseId

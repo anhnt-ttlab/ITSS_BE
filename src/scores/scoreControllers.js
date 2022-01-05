@@ -94,23 +94,9 @@ scoreRouter.get("/", async (req, res, next) => {
             })
         }
         var listResult = await getListScoresByInfo(req.query);
-        var result = await Promise.all(listResult.map(async (item) => {
-            var currentClass = await findClassLessonByInfo({classId: req.query.classId, lessonId: item.lesson_id});
-            var talent = await findTalentById(item.talent_id);
-            var lesson = await findLessonById(item.lesson_id);
-            var resultItem = {
-                ...currentClass,
-                ...talent,
-                ...lesson,
-                time: currentClass.time,
-                score: item.score
-            }
-            delete resultItem.avatar;
-            return resultItem
-        }))
         return res.send({
             message: "Get list scores successfully.",
-            scores: result,
+            scores: listResult,
             statusCode: 200
         });
     }
