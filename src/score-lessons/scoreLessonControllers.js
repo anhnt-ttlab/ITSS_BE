@@ -33,8 +33,7 @@ scoreLessonRouter.get("/", async (req, res, next) => {
         }
           var listResult = await findScoresByClassLesson(req.query);
           var listResultWithFullInfo = await Promise.all(listResult.map(async (item) => {
-              var currentTalent = await findTalentById(item.talent_id);
-              return {...item, ...currentTalent, ...checkExistLesson}
+              return {...item, ...checkExistLesson}
         }))
           return res.send({
               message: "Get list score lessons successfully.",

@@ -46,6 +46,18 @@ let getListSchedules = async (body) => {
     } finally {}
   }
 
+  let getListSchedulesByTalentIdWithMoreInfo = async (talentId) => {
+    try {
+        var sql = "SELECT * FROM schedules INNER JOIN classes on schedules.class_id = classes.class_id INNER JOIN courses ON classes.course_id = courses.course_id where schedules.talent_id = ?";
+        var values = [talentId]
+        const rows = await query(sql, values);
+        return rows
+    } catch(err) {
+        console.log(err)
+        throw err
+    } finally {}
+  }
+
   let getListSchedulesByTalentIdWithOtherInfo = async (talentId) => {
     try {
         var sql = "SELECT * FROM schedules INNER JOIN courses ON schedules.course_id = courses.course_id INNER JOIN classes ON classes.class_id = schedules.class_id where talent_id = ?";
@@ -129,5 +141,6 @@ export {
     findScheduleByInfo,
     getListSchedulesByTalentIdWithOtherInfo,
     // updateSchedule,
+    getListSchedulesByTalentIdWithMoreInfo,
     getListSchedulesByTalentId
 };

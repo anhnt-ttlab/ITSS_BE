@@ -2,7 +2,7 @@ import express from "express"
 import { findClassById } from "../classes/classServices.js";
 import { findLessonById } from "../lessons/lessonServices.js";
 import { isLogging } from "../managers/managerServices.js"
-import { findClassLessonByInfo, findClassLessonsByClassId, updateClassLesson } from "./classLessonServices.js"
+import { findClassLessonByInfo, findClassLessonsByClassId, findClassLessonsByClassIdWithMoreInfo, updateClassLesson } from "./classLessonServices.js"
 import { updateClassLessonValidator } from "./classLessonValidators.js";
 let classLessonRouter = new express.Router();
 
@@ -22,19 +22,16 @@ classLessonRouter.get("/", async (req, res, next) => {
                 statusCode: 404
             })
         }
-          var listResult = await findClassLessonsByClassId(req.query.classId);
-          var classInfo = await findClassById(req.query.classId)
-          var listResultWithFullInfo = await Promise.all(listResult.map(async (item) => {
-            var currentLesson = await findLessonById(item.lesson_id)
-            return {
-              ...item,
-              ... currentLesson
-            }
-        }))
+          var listResult = await findClassLessonsByClassIdWithMoreInfo(req.query.classId);
+        //   var listResultWithFullInfo = await Promise.all(listResult.map(async (item) => {
+        //     return {
+        //       ...item
+        //     }
+        // }))
           return res.send({
               message: "Get list classLessons successfully.",
-              classDetail: listResultWithFullInfo,
-              class_name: classInfo.class_name,
+              classDetail: listResult,
+              class_name: checkExistClass.class_name,
               statusCode: 200
           });
       }

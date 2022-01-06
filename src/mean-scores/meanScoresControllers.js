@@ -2,7 +2,7 @@ import express from "express"
 import { isLogging } from "../managers/managerServices.js"
 import {findTalentById, findCourseById} from "../talents/talentServices.js"
 import {findClassById} from "../classes/classServices.js"
-import { getListSchedulesByTalentId } from "../schedules/scheduleServices.js"
+import { getListSchedulesByTalentId, getListSchedulesByTalentIdWithMoreInfo } from "../schedules/scheduleServices.js"
 import { calMeanScore } from "../scores/scoreServices.js"
 let meanScoreRouter = new express.Router();
 meanScoreRouter.get("/", async (req, res, next) => {
@@ -21,16 +21,26 @@ meanScoreRouter.get("/", async (req, res, next) => {
                 statusCode: 404
             })
         }
-        var scheduleList = await getListSchedulesByTalentId(req.query.talentId);
+        var scheduleList = await getListSchedulesByTalentIdWithMoreInfo(req.query.talentId);
         var courseResult = []
         var allTalentScores = []
+        var scheduleListResult = []
+        // await Promise.all(scheduleList.map(async (item) => {
+        //     courseResult.push(currentCourse);
+        // }))
         await Promise.all(scheduleList.map(async (item) => {
-            var currentClass = await findClassById(item.class_id);
-            var currentCourse = await findCourseById(currentClass.course_id);
-            courseResult.push(currentCourse);
+            courseResult.push({
+              course_id: item.course_id,
+              course_name: item.course_name
+            });
         }))
-
-        await Promise.all(courseResult.map(async (item) => {
+        await Promise.all(scheduleList.map(async (item) => {
+          scheduleListResult.push({
+            course_id: item.course_id,
+            mean_score: item.mean_score
+          });
+      }))
+        await Promise.all(scheduleList.map(async (item) => {
             var meanScore = await calMeanScore(item.course_id)
             allTalentScores.push({
                 ...item,
@@ -40,7 +50,7 @@ meanScoreRouter.get("/", async (req, res, next) => {
         return res.send({
             message: "Get list scores successfully.",
             courses: courseResult,
-            talentScores: scheduleList,
+            talentScores: scheduleListResult,
             allTalentScores: allTalentScores,
             statusCode: 200
         });

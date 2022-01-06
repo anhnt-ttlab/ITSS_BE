@@ -25,13 +25,6 @@ talentClassRouter.get("/", async (req, res, next) => {
             })
         }
           var listResult = await findTalentClassesByClassId(req.query.classId);
-          var talentInClassList = await Promise.all(listResult.map(async (item) => {
-            var currentTalent = await findTalentById(item.talent_id)
-            return {
-              ...item,
-              ... currentTalent
-            }
-        }))
         var talentsOfOwnManagerList = await findTalentsByManagerId(req.session.user[0].manager_id)
         var talentsResult = []
         await Promise.all(talentsOfOwnManagerList.map(async (item) => {
@@ -43,7 +36,7 @@ talentClassRouter.get("/", async (req, res, next) => {
       }))
           return res.send({
               message: "Get list talentClasses successfully.",
-              talentInClass: talentInClassList,
+              talentInClass: listResult,
               talents: talentsResult,
               statusCode: 200
           });

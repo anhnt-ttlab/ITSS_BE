@@ -11,6 +11,17 @@ let findClassLessonsByClassId = async (classId) => {
   } finally {}
 }
 
+let findClassLessonsByClassIdWithMoreInfo = async (classId) => {
+  var sql = "SELECT * FROM classesLessons INNER JOIN classes ON classes.class_id = classesLessons.class_id where classesLessons.class_id = ?";
+  try {
+    const rows = await query(sql, [classId]);
+    return rows
+  } catch(err) {
+    console.log(err)
+    throw err
+  } finally {}
+}
+
 let findClassLessonByInfo = async (body) => {
     var sql = "SELECT * FROM classesLessons where class_id = ? and lesson_id = ?";
     try {
@@ -39,5 +50,6 @@ let findClassLessonByInfo = async (body) => {
 export {
     findClassLessonsByClassId,
     updateClassLesson,
-    findClassLessonByInfo
+    findClassLessonByInfo,
+    findClassLessonsByClassIdWithMoreInfo
 };

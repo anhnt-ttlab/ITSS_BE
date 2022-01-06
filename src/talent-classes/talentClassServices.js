@@ -1,7 +1,7 @@
 import { query } from "../../server.js";
 
 let findTalentClassesByClassId = async (classId) => {
-  var sql = "SELECT * FROM talentClasses where class_id = ?";
+  var sql = "SELECT * FROM talentClasses INNER JOIN talents ON talentClasses.talent_id = talents.talent_id where talentClasses.class_id = ?";
   try {
     const rows = await query(sql, [classId]);
     return rows
