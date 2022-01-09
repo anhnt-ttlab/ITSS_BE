@@ -90,6 +90,11 @@ con.connect(function (err) {
   console.log("Table classesLessons created");
   });
   
-  
+  var updateScoresTable2612 =
+  "ALTER TABLE itss.courses add column description varchar(2000);";
+  con.query(updateScoresTable2612, function (err, result) {
+  if (err) throw err;
+  console.log("Added description column to courses table");
+  });
   return;
 });

@@ -122,6 +122,7 @@ lessonRouter.get("/", async (req, res, next) => {
               message: "Get list lessons successfully.",
               lessons: listResult,
               course_name: currentCourse.course_name,
+              description: currentCourse.description,
               statusCode: 200
           });
       }

@@ -10,6 +10,7 @@ let raiseErr = async (req) => {
 
   let createCourseValidator = async (req) => {
     req.check('courseName', 'course name is required.').not().isEmpty();
+    req.check('description', 'course description is required.').not().isEmpty();
     //check for errors
     return await raiseErr(req);
   }

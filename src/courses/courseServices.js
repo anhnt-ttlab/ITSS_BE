@@ -2,8 +2,8 @@ import { query } from "../../server.js";
 
 async function createCourse (body) {
     try {
-      var sql = "INSERT INTO courses (course_name, creator_id) VALUES(?,?)";
-      var values = [body.courseName, body.creatorId];
+      var sql = "INSERT INTO courses (course_name, creator_id, description) VALUES(?,?,?)";
+      var values = [body.courseName, body.creatorId, body.description];
       var result = await query(sql, values);
       return result.insertId;
     } catch(error) {
@@ -81,8 +81,8 @@ let getListCourses = async () => {
 
   async function updateCourse (body) {
     try {
-    var sql = "UPDATE courses SET course_name = ? WHERE course_id = ?;";
-    var values = [body.courseName, body.courseId];
+    var sql = "UPDATE courses SET course_name = ?, description = ? WHERE course_id = ?;";
+    var values = [body.courseName, body.description, body.courseId];
     await query(sql, values);
     } catch(error) {
     console.log(error)
