@@ -1,10 +1,10 @@
 import express from "express"
-import { bulkCreateTalentClass, findClassById } from "../classes/classServices.js";
+import { bulkCreateTalentClass, findClassByCourseId, findClassById, getListClasses } from "../classes/classServices.js";
 import { getListLessonsByClassId } from "../lessons/lessonServices.js";
 import { isLogging } from "../managers/managerServices.js"
 import { createScore } from "../scores/scoreServices.js";
 import { findTalentById, findTalentByIds, findTalentsByManagerId } from "../talents/talentServices.js";
-import { findTalentClassByInfo, findTalentClassesByClassId } from "./talentClassServices.js";
+import { findTalentClassByInfo, findTalentClassesByClassId, findTalentClassesByTalentId } from "./talentClassServices.js";
 import { createTalentClassValidator } from "./talentClassValidators.js";
 let talentClassRouter = new express.Router();
 
@@ -24,13 +24,23 @@ talentClassRouter.get("/", async (req, res, next) => {
                 statusCode: 404
             })
         }
+        const listClassesWithSameCourse = await findClassByCourseId(checkExistClass.course_id)
+        const listClassesIdWithSameCourse = await Promise.all(listClassesWithSameCourse.map(async (item) => {
+          return item.class_id
+      }))
           var listResult = await findTalentClassesByClassId(req.query.classId);
         var talentsOfOwnManagerList = await findTalentsByManagerId(req.session.user[0].manager_id)
         var talentsResult = []
         await Promise.all(talentsOfOwnManagerList.map(async (item) => {
-          var currentTalent = await findTalentClassByInfo({talentId: item.talent_id, classId: req.query.classId})
-          if (!currentTalent) {
-            talentsResult.push(item)
+          var currentTalents = await findTalentClassesByTalentId(item.talent_id)
+          const currentTalentClasses = await Promise.all(currentTalents.map(async (item2) => {
+            return item2.class_id
+        }))
+          if (!currentTalentClasses.includes(req.query.classId)) {
+            const filteredArray = listClassesIdWithSameCourse.filter(value => currentTalentClasses.includes(value));
+            console.log(filteredArray)
+            if (filteredArray.length == 0)
+              talentsResult.push(item)
           }
           return 0
       }))
