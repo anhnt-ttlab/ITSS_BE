@@ -47,7 +47,7 @@ scoreLessonRouter.get("/", async (req, res, next) => {
     }
   });
 
-  scoreLessonRouter.patch("/", async (req, res, next) => {
+  scoreLessonRouter.put("/", async (req, res, next) => {
     try {
       let validator = await updateScoreLessonValidator(req);
       if (validator !== null) {

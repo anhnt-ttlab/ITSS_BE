@@ -41,7 +41,7 @@ talentRouter.post("/", async (req, res, next) => {
   }
 });
 
-talentRouter.patch("/", async (req, res, next) => {
+talentRouter.put("/", async (req, res, next) => {
   try {
     let validator = await updateTalentValidator(req);
     if (validator !== null) {

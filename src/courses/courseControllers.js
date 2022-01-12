@@ -53,7 +53,7 @@ courseRouter.post("/", async (req, res, next) => {
   }
 });
 
-courseRouter.patch("/", async (req, res, next) => {
+courseRouter.put("/", async (req, res, next) => {
     try {
       let validator = await updateCourseValidator(req);
       if (validator !== null) {

@@ -8,7 +8,7 @@ import {findLessonById} from "../lessons/lessonServices.js"
 import {findClassById, findClassLessonByInfo} from "../classes/classServices.js"
 let scoreRouter = new express.Router();
 
-scoreRouter.patch("/", async (req, res, next) => {
+scoreRouter.put("/", async (req, res, next) => {
   try {
     let validator = await updateScoreValidator(req);
     if (validator !== null) {

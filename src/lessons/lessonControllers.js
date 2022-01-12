@@ -67,7 +67,7 @@ lessonRouter.post("/", async (req, res, next) => {
   }
 });
 
-lessonRouter.patch("/", async (req, res, next) => {
+lessonRouter.put("/", async (req, res, next) => {
     try {
       let validator = await updateLessonValidator(req);
       if (validator !== null) {

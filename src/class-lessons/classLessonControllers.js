@@ -41,7 +41,7 @@ classLessonRouter.get("/", async (req, res, next) => {
     }
   });
 
-  classLessonRouter.patch("/", async (req, res, next) => {
+  classLessonRouter.put("/", async (req, res, next) => {
     try {
       let validator = await updateClassLessonValidator(req);
       if (validator !== null) {

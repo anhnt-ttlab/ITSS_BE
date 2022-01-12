@@ -67,7 +67,7 @@ classRouter.post("/", async (req, res, next) => {
   }
 });
 
-classRouter.patch("/", async (req, res, next) => {
+classRouter.put("/", async (req, res, next) => {
   try {
     let validator = await updateClassValidator(req);
     if (validator !== null) {
