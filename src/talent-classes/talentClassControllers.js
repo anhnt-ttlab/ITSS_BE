@@ -38,7 +38,6 @@ talentClassRouter.get("/", async (req, res, next) => {
         }))
           if (!currentTalentClasses.includes(req.query.classId)) {
             const filteredArray = listClassesIdWithSameCourse.filter(value => currentTalentClasses.includes(value));
-            console.log(filteredArray)
             if (filteredArray.length == 0)
               talentsResult.push(item)
           }

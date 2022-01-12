@@ -23,35 +23,21 @@ meanScoreRouter.get("/", async (req, res, next) => {
         }
         var scheduleList = await getListSchedulesByTalentIdWithMoreInfo(req.query.talentId);
         var courseResult = []
-        var allTalentScores = []
-        var scheduleListResult = []
         // await Promise.all(scheduleList.map(async (item) => {
         //     courseResult.push(currentCourse);
         // }))
         await Promise.all(scheduleList.map(async (item) => {
+          var meanScore = await calMeanScore(item.course_id)
             courseResult.push({
               course_id: item.course_id,
-              course_name: item.course_name
+              course_name: item.course_name,
+              talent_score: item.mean_score,
+              mean_score: Math.round(meanScore * 100) / 100
             });
-        }))
-        await Promise.all(scheduleList.map(async (item) => {
-          scheduleListResult.push({
-            course_id: item.course_id,
-            mean_score: item.mean_score
-          });
-      }))
-        await Promise.all(scheduleList.map(async (item) => {
-            var meanScore = await calMeanScore(item.course_id)
-            allTalentScores.push({
-                ...item,
-                mean_score: Math.round(meanScore * 100) / 100
-            })
         }))
         return res.send({
             message: "Get list scores successfully.",
-            courses: courseResult,
-            talentScores: scheduleListResult,
-            allTalentScores: allTalentScores,
+            scroreInfo: courseResult,
             statusCode: 200
         });
     }
