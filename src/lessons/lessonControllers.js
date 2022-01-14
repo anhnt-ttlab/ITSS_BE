@@ -4,7 +4,7 @@ import {createLesson, getListLessonsByCourseId, findLessonById, updateLesson, de
 import {createLessonValidator, updateLessonValidator} from "./lessonValidators.js"
 import { findSchedulesByCourseId } from "../schedules/scheduleServices.js"
 import { findCourseById } from "../courses/courseServices.js"
-import { createClassLesson, findClassByCourseId } from "../classes/classServices.js"
+import { bulkInsertScores, createClassLesson, findClassByCourseId, findScoresByClassIds } from "../classes/classServices.js"
 let lessonRouter = new express.Router();
 
 lessonRouter.post("/", async (req, res, next) => {
@@ -36,10 +36,6 @@ lessonRouter.post("/", async (req, res, next) => {
     }
     let lessonCreated = await createLesson(req.body);
     if (lessonCreated) {
-      let schedulesList = await findSchedulesByCourseId(req.body.courseId);
-      var talentsId = await Promise.all(schedulesList.map(async (item) => {
-        return item.talent_id
-    }))
     var classList = await findClassByCourseId(req.body.courseId)
     await Promise.all(classList.map(async (item) => {
       await createClassLesson({
@@ -49,6 +45,14 @@ lessonRouter.post("/", async (req, res, next) => {
       })
       return 0
   }))
+  const classIds = await Promise.all(classList.map(async (item) => {
+    return item.class_id
+}))
+  var scoreList = await findScoresByClassIds(classIds);
+  const newScores = await Promise.all(scoreList.map(async (item) => {
+    return [0.0, item.talent_id, lessonCreated, item.class_id]
+}))
+await bulkInsertScores(newScores)
       var finalResult = await findLessonById(lessonCreated);
         return res.send({
         message: "Create lesson successfully.",

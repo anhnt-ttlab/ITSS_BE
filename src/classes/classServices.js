@@ -36,6 +36,28 @@ let findClassByCourseId = async (courseId) => {
   } finally {}
 }
 
+let findScoresByClassIds = async (classIds) => {
+  var sql = "SELECT * FROM scores where class_id IN ( ? ) GROUP BY talent_id";
+  try {
+    const rows = await query(sql, [classIds]);
+    return rows
+  } catch(err) {
+    console.log(err)
+    throw err
+  } finally {}
+}
+
+let bulkInsertScores = async (scores) => {
+  var sql = "INSERT INTO scores (score, talent_id, lesson_id, class_id) VALUES ?";
+  try {
+    const rows = await query(sql, [scores]);
+    return rows
+  } catch(err) {
+    console.log(err)
+    throw err
+  } finally {}
+}
+
 let findClassLessonByInfo = async (body) => {
   var sql = "SELECT * FROM classesLessons where class_id = ? and lesson_id = ?";
   try {
@@ -210,7 +232,9 @@ export {
     findClassByCourseId,
     bulkCreateTalentClass,
     findTalentumberByClassId,
+    bulkInsertScores,
     getListClassesWithOtherInfo,
+    findScoresByClassIds,
     deleteTalentClassByInfo,
     createClassLesson
 };

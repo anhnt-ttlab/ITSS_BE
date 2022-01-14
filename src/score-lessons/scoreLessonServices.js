@@ -12,7 +12,7 @@ let findClassLessonsByClassId = async (classId) => {
 }
 
 let findScoresByClassLesson = async (body) => {
-    var sql = "SELECT * FROM scores INNER JOIN talents ON scores.talent_id = talents.talent_id where class_id = ? and lesson_id = ?";
+    var sql = "SELECT * FROM scores INNER JOIN talents ON scores.talent_id = talents.talent_id where class_id = ? and lesson_id = ? order by talents.name";
     try {
       const rows = await query(sql, [body.classId, body.lessonId]);
       return rows
