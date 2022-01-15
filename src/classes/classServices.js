@@ -96,18 +96,41 @@ async function createTalentClass (body) {
   finally {}
 }
 
+let bulkInsertScores2 = async (scores) => {
+  var sql = "INSERT INTO scores (score, talent_id, lesson_id, class_id) VALUES ?";
+  try {
+    const rows = await query(sql, [scores]);
+    return rows
+  } catch(err) {
+    console.log(err)
+    throw err
+  } finally {}
+}
+
 let bulkCreateTalentClass = async (body) => {
   try {
-    var finalResult = await Promise.all(body.talentIds.map(async (item) => {
-      var sql = "INSERT INTO talentClasses (class_id, talent_id) VALUES (?,?)";
-      await query(sql, [body.classId, item]);
-      var currentClass = await findClassById(body.classId)
-      var sqlSchedule = "INSERT INTO schedules (talent_id, course_id, mean_score, class_id) VALUES(?,?,0.0,?)";
-      var values = [item, currentClass.course_id, body.classId];
-      await query(sqlSchedule, values);
-      return 0
+    var newTalentClasses = [];
+    var currentClass = await findClassById(body.classId);
+    var newSchedules = [];
+    await Promise.all(body.talentIds.map(async (item) => {
+      newTalentClasses.push([body.classId, item]);
+      newSchedules.push([item, currentClass.course_id,0.0, body.classId])
     }))
-    return finalResult;
+    var sql = "INSERT INTO talentClasses (class_id, talent_id) VALUES ?";
+    await query(sql, [newTalentClasses]);
+    var sqlSchedule = "INSERT INTO schedules (talent_id, course_id, mean_score, class_id) VALUES ?";
+    await query(sqlSchedule, [newSchedules]);
+
+    // var finalResult = await Promise.all(body.talentIds.map(async (item) => {
+    //   var sql = "INSERT INTO talentClasses (class_id, talent_id) VALUES ?";
+    //   await query(sql, [newTalentClasses]);
+    //   var currentClass = await findClassById(body.classId)
+    //   var sqlSchedule = "INSERT INTO schedules (talent_id, course_id, mean_score, class_id) VALUES(?,?,0.0,?)";
+    //   var values = [item, currentClass.course_id, body.classId];
+    //   await query(sqlSchedule, values);
+    //   return 0
+    // }))
+    return 1;
   } catch(error) {
     console.log(error)
     return false;

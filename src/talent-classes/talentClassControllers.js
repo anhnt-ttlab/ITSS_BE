@@ -1,5 +1,5 @@
 import express from "express"
-import { bulkCreateTalentClass, findClassByCourseId, findClassById, getListClasses } from "../classes/classServices.js";
+import { bulkCreateTalentClass, bulkInsertScores, findClassByCourseId, findClassById, getListClasses } from "../classes/classServices.js";
 import { getListLessonsByClassId } from "../lessons/lessonServices.js";
 import { isLogging } from "../managers/managerServices.js"
 import { createScore } from "../scores/scoreServices.js";
@@ -82,17 +82,24 @@ talentClassRouter.get("/", async (req, res, next) => {
           return 0
       }))
       let lessonsList = await getListLessonsByClassId(req.body.classId)
+      const newScores = [];
       await Promise.all(req.body.talentIds.map(async (item) => {
         await Promise.all(lessonsList.map(async (item2) => {
-          await createScore({
-            talentId:item,
-            lessonId:item2.lesson_id,
-            classId: req.body.classId
-          })
-          return 0
+          newScores.push([0.0, item, item2.lesson_id, req.body.classId])
         }))
+        // await Promise.all(lessonsList.map(async (item2) => {
+        //   await createScore({
+        //     talentId:item,
+        //     lessonId:item2.lesson_id,
+        //     classId: req.body.classId
+        //   })
+        //   return 0
+        // }))
         return 0
       }))
+      if (newScores.length) {
+        await bulkInsertScores(newScores)
+      }
           return res.send({
           message: "Create talent class successfully.",
           talentInClass: currentTalent,

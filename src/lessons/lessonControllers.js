@@ -48,6 +48,7 @@ lessonRouter.post("/", async (req, res, next) => {
   const classIds = await Promise.all(classList.map(async (item) => {
     return item.class_id
 }))
+if (classIds.length) {
   var scoreList = await findScoresByClassIds(classIds);
   const newScores = await Promise.all(scoreList.map(async (item) => {
     return [0.0, item.talent_id, lessonCreated, item.class_id]
@@ -55,7 +56,7 @@ lessonRouter.post("/", async (req, res, next) => {
 if (newScores.length) {
   await bulkInsertScores(newScores)
 }
-
+}
       var finalResult = await findLessonById(lessonCreated);
         return res.send({
         message: "Create lesson successfully.",
