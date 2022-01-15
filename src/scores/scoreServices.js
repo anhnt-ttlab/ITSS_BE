@@ -68,8 +68,19 @@ async function updateScore (body) {
       var sql = "UPDATE scores SET score = ? WHERE talent_id = ? and lesson_id = ? and class_id = ?;";
       var values = [body.score, body.talentId, body.lessonId, body.classId];
       await query(sql, values);
+    } catch(error) {
+      console.log(error)
+      throw error
+    }
+    finally {}
+    return 0;
+}
+
+async function updateMeanScore (body) {
+  try {
+    await Promise.all(body.talentIds.map(async (item) => {
       var findScoreSql = "SELECT * FROM scores WHERE talent_id = ? and class_id = ?;";
-      var valuesFindScore = [body.talentId, body.classId];
+      var valuesFindScore = [item, body.classId];
       var mean_score = 0.0;
       var scoreList = await query(findScoreSql, valuesFindScore);
       if (scoreList.length) {
@@ -79,15 +90,16 @@ async function updateScore (body) {
         }))
         mean_score = mean_score/scoreList.length
         var updateMeanScoreSql = "UPDATE schedules SET mean_score = ? WHERE talent_id = ? and class_id = ?;";
-        var valuesUpdateMeanScoreSql = [mean_score, body.talentId, body.classId];
+        var valuesUpdateMeanScoreSql = [mean_score, item, body.classId];
         await query(updateMeanScoreSql, valuesUpdateMeanScoreSql);
       }
-    } catch(error) {
-      console.log(error)
-      throw error
-    }
-    finally {}
-    return 0;
+    }))
+  } catch(error) {
+    console.log(error)
+    throw error
+  }
+  finally {}
+  return 0;
 }
 
 async function calMeanScore (courseId) {
@@ -134,6 +146,7 @@ export {
     createScore,
     getListScoresByInfo,
     deleteScore,
+    updateMeanScore,
     findScoreByInfo,
     deleteScoreById,
     calMeanScore,

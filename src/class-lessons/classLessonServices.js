@@ -12,7 +12,7 @@ let findClassLessonsByClassId = async (classId) => {
 }
 
 let findClassLessonsByClassIdWithMoreInfo = async (classId) => {
-  var sql = "SELECT * FROM classesLessons INNER JOIN classes ON classes.class_id = classesLessons.class_id INNER JOIN lessons ON classesLessons.lesson_id = lessons.lesson_id where classesLessons.class_id = ?";
+  var sql = "SELECT * FROM classesLessons INNER JOIN classes ON classes.class_id = classesLessons.class_id INNER JOIN lessons ON classesLessons.lesson_id = lessons.lesson_id where classesLessons.class_id = ? order by classesLessons.lesson_id";
   try {
     const rows = await query(sql, [classId]);
     return rows

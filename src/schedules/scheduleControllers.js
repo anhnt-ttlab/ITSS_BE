@@ -6,7 +6,7 @@ import {findTalentById, findCourseById} from "../talents/talentServices.js"
 import {createScheduleValidator, deleteScheduleValidator} from "./scheduleValidators.js"
 import {getListLessonsByCourseId} from "../lessons/lessonServices.js"
 import { query } from "../../server.js";
-import {createScore} from "../scores/scoreServices.js"
+import {createScore, updateMeanScore} from "../scores/scoreServices.js"
 import {findClassById, createTalentClass, deleteTalentClassByInfo} from "../classes/classServices.js"
 let scheduleRouter = new express.Router();
 
@@ -144,6 +144,26 @@ scheduleRouter.delete("/", async (req, res, next) => {
     console.log(error)
     return res.status(500).send({error: "Server Error"});
   }
+});
+
+scheduleRouter.put("/", async (req, res, next) => {
+    try {
+      let isLogged = await isLogging(req);
+      if (isLogged === false) {
+      return res.send({
+          message: "You haven't logged in.",
+          statusCode: 401
+      });
+      }
+      await updateMeanScore(req.body);
+        return res.send({
+            message: "Update success.",
+            statusCode: 200
+            });
+    } catch (error) {
+      console.log(error)
+      return res.status(500).send({error: "Server Error"});
+    }
 });
 
 scheduleRouter.get("/", async (req, res, next) => {
