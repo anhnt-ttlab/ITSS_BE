@@ -61,6 +61,12 @@ scoreLessonRouter.get("/", async (req, res, next) => {
       });
       }
       var listResult = await Promise.all(req.body.talentScores.map(async (item) => {
+        await updateScore({
+          score: item.score,
+          talentId: item.talent_id,
+          classId: req.body.classId,
+          lessonId: req.body.lessonId
+        })
         var currentItem = await findScoreByInfo({
           talentId: item.talent_id,
           classId: req.body.classId,
