@@ -45,6 +45,7 @@ var con = mysql.createConnection({
   user: process.env.DB_USERNAME || "b74937bf47e8f6",
   password: process.env.DB_PASSWORD || "4e6fcb13",
   database: process.env.DB_NAME || "heroku_b4a750ab3bbd554",
+  multipleStatements: true,
 });
 const query = util.promisify(con.query).bind(con);
 app.use(expressValidator())
