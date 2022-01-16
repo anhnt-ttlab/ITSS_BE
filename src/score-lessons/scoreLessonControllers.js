@@ -2,7 +2,7 @@ import express from "express"
 import { findClassById } from "../classes/classServices.js";
 import { findLessonById } from "../lessons/lessonServices.js";
 import { isLogging } from "../managers/managerServices.js"
-import { updateScore } from "../scores/scoreServices.js";
+import { updateScore, updateScores } from "../scores/scoreServices.js";
 import { findScoresByClassLesson } from "./scoreLessonServices.js";
 import { updateScoreLessonValidator } from "./scoreLessonValidators.js"
 let scoreLessonRouter = new express.Router();
@@ -59,15 +59,19 @@ scoreLessonRouter.get("/", async (req, res, next) => {
           statusCode: 401
       });
       }
-      await Promise.all(req.body.talentScores.map(async (item) => {
-        console.log("req.body.talentScores", item);
-        await updateScore({
-          score: item.score | 0,
-          talentId: item.talent_id,
-          classId: req.body.classId,
-          lessonId: req.body.lessonId
-        })
-      }))
+      // const talentIds = await Promise.all(req.body.talentScores.map(async (item) => {
+      //   return item.talent_id;
+      // }))
+      await updateScores(req.body.talentScores)
+      // await Promise.all(req.body.talentScores.map(async (item) => {
+      //   console.log("req.body.talentScores", item);
+      //   await updateScore({
+      //     score: item.score | 0,
+      //     talentId: item.talent_id,
+      //     classId: req.body.classId,
+      //     lessonId: req.body.lessonId
+      //   })
+      // }))
         return res.send({
             message: "Update success.",
             statusCode: 200

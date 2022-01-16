@@ -87,6 +87,25 @@ async function updateScore (body) {
     return 0;
 }
 
+async function updateScores (body) {
+  try {
+    const queryString = "UPDATE scores SET score = CASE 'talentId' "
+    await Promise.all(body.map(async (item) => {
+      queryString = queryString.concat("WHEN " + item.talent_id + " THEN " + item.score )
+    }))
+    console.log("query bulk update scores: ", queryString);
+    await query(queryString);
+    // var sql = "UPDATE scores SET score = ? WHERE talent_id = ? and lesson_id = ? and class_id = ?;";
+    // var values = [body.score, body.talentId, body.lessonId, body.classId];
+    // await query(sql, values);
+  } catch(error) {
+    console.log(error)
+    throw error
+  }
+  finally {}
+  return 0;
+}
+
 async function updateMeanScore (body) {
   try {
     await Promise.all(body.talentIds.map(async (item) => {
@@ -159,6 +178,7 @@ export {
     deleteScore,
     updateMeanScore,
     findScoreByInfoWithMoreInfo,
+    updateScores,
     findScoreByInfo,
     deleteScoreById,
     calMeanScore,
