@@ -25,6 +25,17 @@ let getListScoresByInfo = async (body) => {
   }
   
 
+  let findScoreByInfoWithMoreInfo = async (body) => {
+    var sql = "SELECT * FROM scores INNER JOIN talents ON scores.talent_id = talents.talent_id INNER JOIN lessons ON scores.lesson_id = lessons.lesson_id where scores.talent_id = ? and scores.lesson_id = ?";
+    try {
+      const rows = await query(sql, [body.talentId, body.lessonId]);
+      return rows[0]
+    } catch(err) {
+      console.log(err)
+      throw err
+    } finally {}
+  }
+
   let getListScoresByTalentId = async (talentId) => {
     try {
         var sql = "SELECT * FROM scores where talent_id = ?";
@@ -147,6 +158,7 @@ export {
     getListScoresByInfo,
     deleteScore,
     updateMeanScore,
+    findScoreByInfoWithMoreInfo,
     findScoreByInfo,
     deleteScoreById,
     calMeanScore,

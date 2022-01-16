@@ -67,19 +67,19 @@ scoreLessonRouter.get("/", async (req, res, next) => {
           classId: req.body.classId,
           lessonId: req.body.lessonId
         })
-        var currentItem = await findScoreByInfo({
+        var currentItem = await findScoreByInfoWithMoreInfo({
           talentId: item.talent_id,
           classId: req.body.classId,
           lessonId: req.body.lessonId
         })
-        var currentTalent = await findTalentById(currentItem.talent_id);
-        var currentLesson = await findLessonById(currentItem.lesson_id);
-        var resultItem = {
-          ...currentItem,
-          ...currentTalent,
-          ...currentLesson
-        }
-        return resultItem
+        // var currentTalent = await findTalentById(currentItem.talent_id);
+        // var currentLesson = await findLessonById(currentItem.lesson_id);
+        // var resultItem = {
+        //   ...currentItem,
+        //   ...currentTalent,
+        //   ...currentLesson
+        // }
+        return currentItem
       }))
         return res.send({
           updatedScores: listResult,
