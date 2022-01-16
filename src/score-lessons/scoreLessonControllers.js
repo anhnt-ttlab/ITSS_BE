@@ -2,6 +2,7 @@ import express from "express"
 import { findClassById } from "../classes/classServices.js";
 import { findLessonById } from "../lessons/lessonServices.js";
 import { isLogging } from "../managers/managerServices.js"
+import { updateScore } from "../scores/scoreServices.js";
 import { findScoresByClassLesson } from "./scoreLessonServices.js";
 import { updateScoreLessonValidator } from "./scoreLessonValidators.js"
 let scoreLessonRouter = new express.Router();
