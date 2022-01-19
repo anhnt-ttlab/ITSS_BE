@@ -13,6 +13,17 @@ let findManagers = async (body) => {
   } finally {}
 }
 
+let findManagerById = async (id) => {
+  var sql = "SELECT * FROM managers where manager_id = ?";
+  try {
+    const rows = await query(sql, [id]);
+    return rows[0]
+  } catch(err) {
+    console.log(err)
+    throw err
+  } finally {}
+}
+
 async function register (body) {
   let user = await findManagers(body);
   let hashedPassword;
@@ -37,12 +48,10 @@ async function register (body) {
 let signIn = async (req) => {
   let user = await findManagers(req.body);
   if (!user.length) {
-    con.end()
     return false;
   } else {
     let comparePass = await bcrypt.compare(req.body.password, user[0].password);
     if (comparePass === false) {
-      con.end()
       return false;
     } else {
       req.session.user = user;
@@ -64,5 +73,6 @@ export {
   findManagers,
   register,
   signIn,
-  isLogging
+  isLogging,
+  findManagerById
 };
